@@ -1,0 +1,59 @@
+commons:
+  file_schema: "s3://"
+  bucket_name: "ilgaz-udacity"
+  fact_path: "${commons.file_schema}${commons.file_schema}/fact"
+  dimension_path: "${commons.file_schema}${commons.file_schema}/dimension"
+data-transfer:
+  immigraion:
+    immigration_meta:
+      name: "immigration"
+      path: "${commons.fact_path}/immigration"
+      schema:
+        imigrant_id: int
+        arrival_date: date
+        transportation_type: string
+        visa_type_id: string
+        origin_city: string
+        origin_country: string
+        where_to_live: string
+        job: string
+    immigrant_meta:
+      name: "immigrant"
+      path: "${commons.dimension_path}/immigrant"
+      schema:
+        imigrant_id: int
+        birth_date: date
+        gender: string
+  gdp_per_capita:
+    gdp_per_capita_meta:
+      name: "gdp_per_capita"
+      path: "${commons.fact_path}/gdp_per_capita"
+      schema:
+        country: string
+        year: int
+        gdp_per_capita: float
+  female_labor_force:
+    female_labor_force_meta:
+      name: "female_labor_force"
+      path: "${commons.fact_path}/female_labor_force"
+      schema:
+        country: string
+        year: int
+        female_labor_force_ratio: float
+  temperature:
+    temperature_meta:
+      name: "temperature"
+      path: "${commons.fact_path}/temperature"
+      schema:
+        city: string
+        date: date
+        average_temperature: float
+        average_temperature_uncertainty: float
+    location_meta:
+      name: "city"
+      path: "${commons.dimension_path}/location"
+      schema:
+        city: string
+        country: string
+        latitude: float
+        longitude: float
