@@ -7,12 +7,6 @@ from scripts.utils import (
     melt
 )
 
-
-def rename(df):
-    df = df.withColumnRenamed("Country Name", "country")
-    return df
-
-
 spark = create_spark_session()
 
 config_path = "scripts/config.yaml"
@@ -20,7 +14,7 @@ config = provide_config(config_path).get('data-transfer').get('gdp_per_capita')
 
 df = read_with_meta(spark, df_meta=config['input_meta'], header=True)
 df = uppercase_columns(df, ['Country Name'])
-df = rename(df)
+df = df.withColumnRenamed("Country Name", "country")
 
 df_long = melt(
     df=df,
