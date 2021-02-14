@@ -1,7 +1,7 @@
 """
 Doc
 """
-from typing import Dict
+from typing import Dict, List
 
 from omegaconf import OmegaConf
 from pyspark.sql import DataFrame
@@ -63,3 +63,19 @@ def write_with_meta(df, df_meta: dict):
         df = df.repartition(repartition_number)
     df = apply_schema(df, schema=schema)
     df.write.parquet(path=path, mode='overwrite', partitionBy=partition_cols)
+
+
+def uppercase_columns(df, col_list: List):
+    """
+    Rewrite the selected columns with upper cases
+    :param df: dataframe
+    :param col_list: List
+        string array of columns to be upper-cased
+    :return: df
+        dataframe
+    """
+    for col in col_list:
+        df = df.withColumn(col, F.upper(F.col(col)))
+        df = df.withColumn(col, F.regexp_replace(F.col(col), 'İ', 'I'))
+        df = df.withColumn(col, F.trim(F.col(col)))
+    return df
