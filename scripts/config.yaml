@@ -1,12 +1,30 @@
 commons:
-  file_schema: "s3://"
-  bucket_name: "ilgaz-udacity"
-  fact_path: "${commons.file_schema}${commons.file_schema}/fact"
-  dimension_path: "${commons.file_schema}${commons.file_schema}/dimension"
+  # file_schema: "s3://"
+  file_schema: ""
+  # bucket_name: "ilgaz-udacity"
+  bucket_name: ""
+  fact_path: "${commons.file_schema}${commons.bucket_name}/fact"
+  dimension_path: "${commons.file_schema}${commons.bucket_name}/dimension"
+  input_path: "${commons.file_schema}${commons.bucket_name}/data"
 data-transfer:
-  immigraion:
+  immigration:
+    input_meta:
+      path: "${commons.input_path}/immigration.parquet"
+      data_format: "parquet"
+      schema:
+        cicid: int
+        i94yr: int
+        i94mon: int
+        i94cit: int
+        i94res: int
+        i94port: string
+        arrdate: int
+        i94mode: int
+        i94addr: string
+        i94visa: int
+        occup: string
+        gender: string
     immigration_meta:
-      name: "immigration"
       path: "${commons.fact_path}/immigration"
       schema:
         imigrant_id: int
@@ -18,7 +36,6 @@ data-transfer:
         where_to_live: string
         job: string
     immigrant_meta:
-      name: "immigrant"
       path: "${commons.dimension_path}/immigrant"
       schema:
         imigrant_id: int
@@ -26,7 +43,6 @@ data-transfer:
         gender: string
   gdp_per_capita:
     gdp_per_capita_meta:
-      name: "gdp_per_capita"
       path: "${commons.fact_path}/gdp_per_capita"
       schema:
         country: string
@@ -34,7 +50,6 @@ data-transfer:
         gdp_per_capita: float
   female_labor_force:
     female_labor_force_meta:
-      name: "female_labor_force"
       path: "${commons.fact_path}/female_labor_force"
       schema:
         country: string
@@ -42,7 +57,6 @@ data-transfer:
         female_labor_force_ratio: float
   temperature:
     temperature_meta:
-      name: "temperature"
       path: "${commons.fact_path}/temperature"
       schema:
         city: string
@@ -50,7 +64,6 @@ data-transfer:
         average_temperature: float
         average_temperature_uncertainty: float
     location_meta:
-      name: "city"
       path: "${commons.dimension_path}/location"
       schema:
         city: string
