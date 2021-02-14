@@ -1,12 +1,12 @@
 """
 Doc
 """
+from itertools import chain
 from typing import Dict, List
+from typing import Iterable
 
 from omegaconf import OmegaConf
-from pyspark.sql import DataFrame
-from pyspark.sql import SparkSession
-from pyspark.sql import functions as F
+from pyspark.sql import DataFrame, SparkSession, functions as F
 
 
 def create_spark_session() -> SparkSession:
@@ -33,7 +33,7 @@ def apply_schema(df: DataFrame, schema: Dict) -> DataFrame:
     return df
 
 
-def read_with_meta(spark, df_meta: dict, *args) -> DataFrame:
+def read_with_meta(spark, df_meta: dict, **kwargs) -> DataFrame:
     """
     """
     path = df_meta["path"]
@@ -42,7 +42,7 @@ def read_with_meta(spark, df_meta: dict, *args) -> DataFrame:
     if data_format == "parquet":
         df = spark.read.parquet(path)
     elif data_format == "csv":
-        df = spark.read.csv(path, *args)
+        df = spark.read.csv(path, **kwargs)
     else:
         raise AttributeError("Only csv or parquet data formats are readable")
     df = apply_schema(df, schema=schema)
@@ -77,4 +77,26 @@ def uppercase_columns(df, col_list: List):
         df = df.withColumn(col, F.upper(F.col(col)))
         df = df.withColumn(col, F.regexp_replace(F.col(col), 'İ', 'I'))
         df = df.withColumn(col, F.trim(F.col(col)))
+    return df
+
+
+def melt(df: DataFrame, key_cols: Iterable[str], value_cols: Iterable[str],
+         var_name: str = "variable", value_name: str = "value") -> DataFrame:
+    """Convert :class:`DataFrame` from wide to long format."""
+
+    # Create map<key: value>
+    vars_and_vals = F.create_map(
+        list(chain.from_iterable([
+            [F.lit(c), F.col(c)] for c in value_cols]
+        ))
+    )
+
+    df = (
+        df
+        .select(*key_cols, F.explode(vars_and_vals))
+        .withColumnRenamed('key', var_name)
+        .withColumnRenamed('value', value_name)
+        .filter(F.col(value_name).isNotNull())
+    )
+
     return df
