@@ -36,7 +36,6 @@ def apply_schema(df: DataFrame, schema: Dict) -> DataFrame:
 def read_with_meta(spark, df_meta: dict, *args) -> DataFrame:
     """
     """
-    df = None
     path = df_meta["path"]
     schema = df_meta["schema"]
     data_format = df_meta["data_format"]
