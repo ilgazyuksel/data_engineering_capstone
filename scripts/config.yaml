@@ -117,6 +117,23 @@ data-transfer:
         year: int
         gdp_per_capita: float
   female_labor_force:
+    input_meta:
+      # path: "${commons.input_path}/gender_indicators.csv"
+      path: "data/gender_indicators.csv"
+      data_format: "csv"
+      schema:
+        "Series Name": string
+        "Country Name": string
+        "2011 [YR2011]": float
+        "2012 [YR2012]": float
+        "2013 [YR2013]": float
+        "2014 [YR2014]": float
+        "2015 [YR2015]": float
+        "2016 [YR2016]": float
+        "2017 [YR2017]": float
+        "2018 [YR2018]": float
+        "2019 [YR2019]": float
+        "2020 [YR2020]": float
     female_labor_force_meta:
       path: "${commons.fact_path}/female_labor_force"
       schema:
