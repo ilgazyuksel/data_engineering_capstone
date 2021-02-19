@@ -7,8 +7,7 @@ commons:
 data-transfer:
   immigration:
     input_meta:
-      # path: "${commons.input_path}/immigration"
-      path: "data/immigration"
+      path: "${commons.input_path}/immigration"
       data_format: "parquet"
       schema:
         cicid: int
@@ -26,8 +25,7 @@ data-transfer:
         biryear: int
         gender: string
     immigration_meta:
-      # path: "${commons.fact_path}/immigration"
-      path: "fact/immigration"
+      path: "${commons.fact_path}/immigration"
       schema:
         imigration_id: int
         birth_year: int
@@ -43,8 +41,7 @@ data-transfer:
         departure_date: date
   gdp_per_capita:
     input_meta:
-      # path: "${commons.input_path}/gdp_per_capita.csv"
-      path: "data/gdp_per_capita.csv"
+      path: "${commons.input_path}/gdp_per_capita.csv"
       data_format: "csv"
       schema:
         "Country Name": string
@@ -110,16 +107,14 @@ data-transfer:
         "2019": float
         "2020": float
     gdp_per_capita_meta:
-      # path: "${commons.fact_path}/gdp_per_capita"
-      path: "fact/gdp_per_capita"
+      path: "${commons.fact_path}/gdp_per_capita"
       schema:
         country: string
         year: int
         gdp_per_capita: float
   female_labor_force:
     input_meta:
-      # path: "${commons.input_path}/gender_indicators.csv"
-      path: "data/gender_indicators.csv"
+      path: "${commons.input_path}/gender_indicators.csv"
       data_format: "csv"
       schema:
         "Series Name": string
@@ -140,25 +135,9 @@ data-transfer:
         country: string
         year: int
         female_labor_force_ratio: float
-  temperature:
-    temperature_meta:
-      path: "${commons.fact_path}/temperature"
-      schema:
-        city: string
-        date: date
-        average_temperature: float
-        average_temperature_uncertainty: float
-    location_meta:
-      path: "${commons.dimension_path}/location"
-      schema:
-        city: string
-        country: string
-        latitude: float
-        longitude: float
   human_capital_index:
     input_meta:
-      # path: "${commons.input_path}/human_capital_index.csv"
-      path: "data/human_capital_index.csv"
+      path: "${commons.input_path}/human_capital_index.csv"
       data_format: "csv"
       schema:
         "Country Name": string
@@ -174,16 +153,14 @@ data-transfer:
         "2019": float
         "2020": float
     human_capital_index_meta:
-      # path: "${commons.fact_path}/human_capital_index"
-      path: "fact/human_capital_index"
+      path: "${commons.fact_path}/human_capital_index"
       schema:
         country: string
         year: int
         human_capital_index: float
   press_freedom_index:
     input_meta:
-      # path: "${commons.input_path}/press_freedom_index.csv"
-      path: "data/press_freedom_index.csv"
+      path: "${commons.input_path}/press_freedom_index.csv"
       data_format: "csv"
       schema:
         "Country Name": string
@@ -206,9 +183,38 @@ data-transfer:
         "2018": float
         "2019": float
     press_freedom_index_meta:
-      # path: "${commons.fact_path}/press_freedom_index"
-      path: "fact/press_freedom_index"
+      path: "${commons.fact_path}/press_freedom_index"
       schema:
         country: string
         year: int
         press_freedom_index: float
+  us_cities_demographics:
+    input_meta:
+      path: "${commons.input_path}/us_cities_demographics.csv"
+      data_format: "csv"
+      schema:
+        "City": string
+        "State": string
+        "Median Age": int
+        "Male Population": int
+        "Female Population": int
+        "Total Population": int
+        "Number of Veterans": int
+        "Foreign-born": int
+        "Average Household Size": float
+        "Race": string
+        "Count": int
+    us_cities_demographics_meta:
+      path: "${commons.fact_path}/us_cities_demographics"
+      schema:
+        "city": string
+        "state": string
+        "median_age": int
+        "male_population": int
+        "female_population": int
+        "total_population": int
+        "veteran_population": int
+        "foreign_population": int
+        "average_household_size": float
+        "race": string
+        "count": int
