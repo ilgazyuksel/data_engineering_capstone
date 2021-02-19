@@ -25,14 +25,19 @@ def rename(df):
     return df
 
 
-spark = create_spark_session()
+def main():
+    spark = create_spark_session()
 
-config_path = "scripts/config.yaml"
-config = provide_config(config_path).get('data-transfer').get('us_cities_demographics')
+    config_path = "scripts/config.yaml"
+    config = provide_config(config_path).get('data-transfer').get('us_cities_demographics')
 
-df = read_with_meta(spark, df_meta=config['input_meta'], header=True, sep=';')
-df = uppercase_columns(df, ['City', 'State', 'Race'])
-df = df.withColumnRenamed("Country Name", "country")
-df = rename(df)
+    df = read_with_meta(spark, df_meta=config['input_meta'], header=True, sep=';')
+    df = uppercase_columns(df, ['City', 'State', 'Race'])
+    df = df.withColumnRenamed("Country Name", "country")
+    df = rename(df)
 
-write_with_meta(df, df_meta=config['us_cities_demographics_meta'])
+    write_with_meta(df, df_meta=config['us_cities_demographics_meta'])
+
+
+if __name__ == "__main__":
+    main()

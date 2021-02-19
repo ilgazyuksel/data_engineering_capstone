@@ -64,16 +64,21 @@ def convert_sas_to_date(df: DataFrame):
     return df
 
 
-spark = create_spark_session()
+def main():
+    spark = create_spark_session()
 
-config_path = "scripts/config.yaml"
-mapping_config_path = "scripts/immigration_data_map.yaml"
-config = provide_config(config_path).get('data-transfer').get('immigration')
+    config_path = "scripts/config.yaml"
+    mapping_config_path = "scripts/immigration_data_map.yaml"
+    config = provide_config(config_path).get('data-transfer').get('immigration')
 
-df = read_with_meta(spark, df_meta=config['input_meta'])
-df = convert_sas_to_date(df)
-df = replace_ids_with_values(df, mapping_config_path=mapping_config_path)
-df = uppercase_columns(df, ['i94port', 'i94addr', 'occup', 'gender'])
-df = rename(df)
+    df = read_with_meta(spark, df_meta=config['input_meta'])
+    df = convert_sas_to_date(df)
+    df = replace_ids_with_values(df, mapping_config_path=mapping_config_path)
+    df = uppercase_columns(df, ['i94port', 'i94addr', 'occup', 'gender'])
+    df = rename(df)
 
-write_with_meta(df, df_meta=config['immigration_meta'])
+    write_with_meta(df, df_meta=config['immigration_meta'])
+
+
+if __name__ == "__main__":
+    main()
