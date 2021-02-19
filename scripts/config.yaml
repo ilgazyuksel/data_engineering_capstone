@@ -180,3 +180,35 @@ data-transfer:
         country: string
         year: int
         human_capital_index: float
+  press_freedom_index:
+    input_meta:
+      # path: "${commons.input_path}/press_freedom_index.csv"
+      path: "data/press_freedom_index.csv"
+      data_format: "csv"
+      schema:
+        "Country Name": string
+        "Indicator": string
+        "2001": float
+        "2002": float
+        "2003": float
+        "2004": float
+        "2005": float
+        "2006": float
+        "2007": float
+        "2008": float
+        "2009": float
+        "2012": float
+        "2013": float
+        "2014": float
+        "2015": float
+        "2016": float
+        "2017": float
+        "2018": float
+        "2019": float
+    press_freedom_index_meta:
+      # path: "${commons.fact_path}/press_freedom_index"
+      path: "fact/press_freedom_index"
+      schema:
+        country: string
+        year: int
+        press_freedom_index: float
