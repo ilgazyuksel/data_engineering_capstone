@@ -28,7 +28,7 @@ def replace_ids_with_values(df: DataFrame, mapping_config_path: str):
 def rename(df):
     df = (
         df
-        .withColumnRenamed("cicid", "imigration_id")
+        .withColumnRenamed("cicid", "immigration_id")
         .withColumnRenamed("biryear", "birth_year")
         .withColumnRenamed("i94res", "nationality")
         .withColumnRenamed("arrdate", "arrival_date")

@@ -17,7 +17,7 @@ def rename(df):
         .withColumnRenamed("Female Population", "female_population")
         .withColumnRenamed("Total Population", "total_population")
         .withColumnRenamed("Number of Veterans", "veteran_population")
-        .withColumnRenamed("Foreign-born", "foreign_population")
+        .withColumnRenamed("Foreign-born", "foreign_born_population")
         .withColumnRenamed("Average Household Size", "average_household_size")
         .withColumnRenamed("Race", "race")
         .withColumnRenamed("Count", "count")

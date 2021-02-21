@@ -27,7 +27,7 @@ data-transfer:
     immigration_meta:
       path: "${commons.fact_path}/immigration"
       schema:
-        imigration_id: int
+        immigration_id: int
         birth_year: int
         gender: string
         nationality: string
@@ -214,7 +214,7 @@ data-transfer:
         "female_population": int
         "total_population": int
         "veteran_population": int
-        "foreign_population": int
+        "foreign_born_population": int
         "average_household_size": float
         "race": string
         "count": int
