@@ -24,7 +24,7 @@ data-transfer:
         occup: string
         biryear: int
         gender: string
-    immigration_meta:
+    output_meta:
       path: "${commons.fact_path}/immigration"
       schema:
         immigration_id: int
@@ -106,7 +106,7 @@ data-transfer:
         "2018": float
         "2019": float
         "2020": float
-    gdp_per_capita_meta:
+    output_meta:
       path: "${commons.fact_path}/gdp_per_capita"
       schema:
         country: string
@@ -129,7 +129,7 @@ data-transfer:
         "2018 [YR2018]": float
         "2019 [YR2019]": float
         "2020 [YR2020]": float
-    female_labor_force_meta:
+    output_meta:
       path: "${commons.fact_path}/female_labor_force"
       schema:
         country: string
@@ -152,7 +152,7 @@ data-transfer:
         "2018": float
         "2019": float
         "2020": float
-    human_capital_index_meta:
+    output_meta:
       path: "${commons.fact_path}/human_capital_index"
       schema:
         country: string
@@ -182,7 +182,7 @@ data-transfer:
         "2017": float
         "2018": float
         "2019": float
-    press_freedom_index_meta:
+    output_meta:
       path: "${commons.fact_path}/press_freedom_index"
       schema:
         country: string
@@ -204,7 +204,7 @@ data-transfer:
         "Average Household Size": float
         "Race": string
         "Count": int
-    us_cities_demographics_meta:
+    output_meta:
       path: "${commons.fact_path}/us_cities_demographics"
       schema:
         "city": string
@@ -218,3 +218,29 @@ data-transfer:
         "average_household_size": float
         "race": string
         "count": int
+  global_temperatures:
+    input_meta:
+      path: "${commons.input_path}/global_temperatures.csv"
+      data_format: "csv"
+      schema:
+        "dt": date
+        "LandAverageTemperature": float
+        "LandAverageTemperatureUncertainty": float
+        "LandMaxTemperature": float
+        "LandMaxTemperatureUncertainty": float
+        "LandMinTemperature": float
+        "LandMinTemperatureUncertainty": float
+        "LandAndOceanAverageTemperature": float
+        "LandAndOceanAverageTemperatureUncertainty": float
+    output_meta:
+      path: "${commons.fact_path}/global_temperatures"
+      schema:
+        "date": date
+        "land_avg_temperature": float
+        "land_avg_temperature_uncertainty": float
+        "land_max_temperature": float
+        "land_max_temperature_uncertainty": float
+        "land_min_temperature": float
+        "land_min_temperature_uncertainty": float
+        "land_ocean_avg_temperature": float
+        "land_ocean_avg_temperature_uncertainty": float

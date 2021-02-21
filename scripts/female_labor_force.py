@@ -39,7 +39,7 @@ def main():
         value_name='female_labor_force_ratio'
     )
 
-    write_with_meta(df_long, df_meta=config['female_labor_force_meta'])
+    write_with_meta(df_long, df_meta=config['output_meta'])
 
 
 if __name__ == "__main__":

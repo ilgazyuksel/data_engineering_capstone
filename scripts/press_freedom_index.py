@@ -27,7 +27,7 @@ def main():
         value_name='press_freedom_index'
     )
 
-    write_with_meta(df_long, df_meta=config['press_freedom_index_meta'])
+    write_with_meta(df_long, df_meta=config['output_meta'])
 
 
 if __name__ == "__main__":

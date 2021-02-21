@@ -26,7 +26,7 @@ def main():
         value_name='human_capital_index'
     )
 
-    write_with_meta(df_long, df_meta=config['human_capital_index_meta'])
+    write_with_meta(df_long, df_meta=config['output_meta'])
 
 
 if __name__ == "__main__":

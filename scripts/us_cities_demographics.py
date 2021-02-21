@@ -33,10 +33,9 @@ def main():
 
     df = read_with_meta(spark, df_meta=config['input_meta'], header=True, sep=';')
     df = uppercase_columns(df, ['City', 'State', 'Race'])
-    df = df.withColumnRenamed("Country Name", "country")
     df = rename(df)
 
-    write_with_meta(df, df_meta=config['us_cities_demographics_meta'])
+    write_with_meta(df, df_meta=config['output_meta'])
 
 
 if __name__ == "__main__":

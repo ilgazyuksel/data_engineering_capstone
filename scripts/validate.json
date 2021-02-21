@@ -1,0 +1,53 @@
+{
+  "Instances": {
+    "Ec2SubnetId": "subnet-8a5564a1",
+    "EmrManagedMasterSecurityGroup": "sg-066db3c07d764e983",
+    "EmrManagedSlaveSecurityGroup": "sg-0000803db21d76f88",
+    "InstanceGroups": [
+      {
+        "EbsConfiguration": {
+          "EbsBlockDeviceConfigs": [
+            {
+              "VolumeSpecification": {
+                "SizeInGB": 32,
+                "VolumeType": "gp2"
+              },
+              "VolumesPerInstance": 1
+            }
+          ],
+          "EbsOptimized": true
+        },
+        "InstanceCount": 1,
+        "InstanceRole": "MASTER",
+        "InstanceType": "m5.xlarge",
+        "Market": "ON_DEMAND",
+        "Name": "Master nodes"
+      }
+    ],
+    "KeepJobFlowAliveWhenNoSteps": true
+  },
+  "Name": "demo_cluster",
+  "VisibleToAllUsers": true,
+  "JobFlowRole": "EMR_EC2_DefaultRole",
+  "ServiceRole": "EMR_DefaultRole",
+  "Applications": [
+    {
+      "Name": "hadoop"
+    },
+    {
+      "Name": "spark"
+    },
+    {
+      "Name": "hive"
+    },
+    {
+      "Name": "livy"
+    },
+    {
+      "Name": "ganglia"
+    },
+    {
+      "Name": "jupyterhub"
+    }
+  ]
+}

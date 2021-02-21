@@ -26,7 +26,7 @@ def main():
         value_name='gdp_per_capita'
     )
 
-    write_with_meta(df_long, df_meta=config['gdp_per_capita_meta'])
+    write_with_meta(df_long, df_meta=config['output_meta'])
 
 
 if __name__ == "__main__":

@@ -77,7 +77,7 @@ def main():
     df = uppercase_columns(df, ['i94port', 'i94addr', 'occup', 'gender'])
     df = rename(df)
 
-    write_with_meta(df, df_meta=config['immigration_meta'])
+    write_with_meta(df, df_meta=config['output_meta'])
 
 
 if __name__ == "__main__":
