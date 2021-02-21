@@ -2,7 +2,6 @@ from scripts.utils import (
     create_spark_session,
     provide_config,
     read_with_meta,
-    uppercase_columns,
     write_with_meta
 )
 
@@ -28,9 +27,9 @@ def main():
     spark = create_spark_session()
 
     config_path = "scripts/config.yaml"
-    config = provide_config(config_path).get('data-transfer').get('us_cities_demographics')
+    config = provide_config(config_path).get('data-transfer').get('global_temperatures')
 
-    df = read_with_meta(spark, df_meta=config['input_meta'], header=True, sep=';')
+    df = read_with_meta(spark, df_meta=config['input_meta'], header=True)
     df = rename(df)
 
     write_with_meta(df, df_meta=config['output_meta'])

@@ -1,9 +1,11 @@
 commons:
-  file_schema: "s3://"
-  bucket_name: "ilgaz-udacity"
-  fact_path: "${commons.file_schema}${commons.bucket_name}/fact"
-  dimension_path: "${commons.file_schema}${commons.bucket_name}/dimension"
-  input_path: "${commons.file_schema}${commons.bucket_name}/data"
+#  file_schema: "s3://"
+  file_schema: .
+#  bucket_name: "ilgaz-udacity/"
+  bucket_name: /
+  fact_path: "${commons.file_schema}${commons.bucket_name}fact"
+  dimension_path: "${commons.file_schema}${commons.bucket_name}dimension"
+  input_path: "${commons.file_schema}${commons.bucket_name}data"
 data-transfer:
   immigration:
     input_meta:
@@ -244,3 +246,19 @@ data-transfer:
         "land_min_temperature_uncertainty": float
         "land_ocean_avg_temperature": float
         "land_ocean_avg_temperature_uncertainty": float
+  temperatures_by_country:
+    input_meta:
+      path: "${commons.input_path}/temperatures_by_country.csv"
+      data_format: "csv"
+      schema:
+        "dt": date
+        "Country": string
+        "AverageTemperature": float
+        "AverageTemperatureUncertainty": float
+    output_meta:
+      path: "${commons.fact_path}/temperatures_by_country"
+      schema:
+        "date": date
+        "country": string
+        "avg_temperature": float
+        "avg_temperature_uncertainty": float
