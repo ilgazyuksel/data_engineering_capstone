@@ -280,3 +280,25 @@ data-transfer:
         "state": string
         "avg_temperature": float
         "avg_temperature_uncertainty": float
+  temperatures_by_city:
+    input_meta:
+      path: "${commons.input_path}/temperatures_by_city.csv"
+      data_format: "csv"
+      schema:
+        "dt": date
+        "Country": string
+        "City": string
+        "Latitude": float
+        "Longitude": float
+        "AverageTemperature": float
+        "AverageTemperatureUncertainty": float
+    output_meta:
+      path: "${commons.fact_path}/temperatures_by_city"
+      schema:
+        "date": date
+        "country": string
+        "city": string
+        "latitude": float
+        "longitude": float
+        "avg_temperature": float
+        "avg_temperature_uncertainty": float
