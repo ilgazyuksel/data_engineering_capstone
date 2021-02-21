@@ -262,3 +262,21 @@ data-transfer:
         "country": string
         "avg_temperature": float
         "avg_temperature_uncertainty": float
+  temperatures_by_state:
+    input_meta:
+      path: "${commons.input_path}/temperatures_by_state.csv"
+      data_format: "csv"
+      schema:
+        "dt": date
+        "Country": string
+        "State": string
+        "AverageTemperature": float
+        "AverageTemperatureUncertainty": float
+    output_meta:
+      path: "${commons.fact_path}/temperatures_by_state"
+      schema:
+        "date": date
+        "country": string
+        "state": string
+        "avg_temperature": float
+        "avg_temperature_uncertainty": float
