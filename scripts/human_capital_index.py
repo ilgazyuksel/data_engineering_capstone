@@ -12,7 +12,7 @@ from scripts.utils import (
 
 
 def add_rank_column(df):
-    w = Window.partitionBy('year').orderBy('human_capital_index')
+    w = Window.partitionBy('year').orderBy(F.col('human_capital_index').desc())
     df = df.withColumn('human_capital_rank', F.row_number().over(w))
     return df
 
