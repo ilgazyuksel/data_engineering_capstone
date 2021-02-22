@@ -160,6 +160,7 @@ data-transfer:
         country: string
         year: int
         human_capital_index: float
+        human_capital_rank: int
   press_freedom_index:
     input_meta:
       path: "${commons.input_path}/press_freedom_index.csv"
@@ -190,6 +191,7 @@ data-transfer:
         country: string
         year: int
         press_freedom_index: float
+        press_freedom_rank: int
   us_cities_demographics:
     input_meta:
       path: "${commons.input_path}/us_cities_demographics.csv"

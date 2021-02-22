@@ -1,3 +1,6 @@
+from pyspark.sql import Window
+from pyspark.sql import functions as F
+
 from scripts.utils import (
     create_spark_session,
     provide_config,
@@ -6,6 +9,12 @@ from scripts.utils import (
     write_with_meta,
     melt
 )
+
+
+def add_rank_column(df):
+    w = Window.partitionBy('year').orderBy('press_freedom_index')
+    df = df.withColumn('press_freedom_rank', F.row_number().over(w))
+    return df
 
 
 def main():
@@ -26,6 +35,7 @@ def main():
         var_name='year',
         value_name='press_freedom_index'
     )
+    df_long = add_rank_column(df_long)
 
     write_with_meta(df_long, df_meta=config['output_meta'])
 

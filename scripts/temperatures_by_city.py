@@ -20,6 +20,7 @@ def rename(df):
     )
     return df
 
+
 def main():
     spark = create_spark_session()
 
