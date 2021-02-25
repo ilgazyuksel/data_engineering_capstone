@@ -1,18 +1,17 @@
 from pyspark.sql import Window
 from pyspark.sql import functions as F
 
-from scripts.utils import (
+from scripts.utils.helper import uppercase_columns, melt
+from scripts.utils.io import (
     create_spark_session,
     provide_config,
     read_with_meta,
-    uppercase_columns,
-    write_with_meta,
-    melt
+    write_with_meta
 )
 
 
 def add_rank_column(df):
-    w = Window.partitionBy('year').orderBy(F.col('press_freedom_index').desc())
+    w = Window.partitionBy('year').orderBy(F.col('press_freedom_index'))
     df = df.withColumn('press_freedom_rank', F.row_number().over(w))
     return df
 

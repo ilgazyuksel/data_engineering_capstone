@@ -1,9 +1,10 @@
-from scripts.utils import (
+from scripts.utils.io import (
     create_spark_session,
     provide_config,
     read_with_meta,
     write_with_meta
 )
+from pyspark.sql import functions as F
 
 
 def rename(df):
@@ -31,6 +32,7 @@ def main():
 
     df = read_with_meta(spark, df_meta=config['input_meta'], header=True)
     df = rename(df)
+    df = df.withColumn('year', F.year('date'))
 
     write_with_meta(df, df_meta=config['output_meta'])
 

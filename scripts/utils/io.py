@@ -1,9 +1,8 @@
 """
 Doc
 """
-from itertools import chain
-from typing import Dict, List
-from typing import Iterable
+import logging
+from typing import Dict
 
 from omegaconf import OmegaConf
 from pyspark.sql import DataFrame, SparkSession, functions as F
@@ -56,47 +55,12 @@ def write_with_meta(df, df_meta: dict):
     schema = df_meta["schema"]
     try:
         partition_cols = df_meta["partition_cols"]
+        if len(partition_cols) == 1:
+            df = df.repartition(partition_cols[0])
+            logging.info(f'Dataframe repartitioned with {partition_cols}')
     except:
         partition_cols = None
         repartition_number = 3
         df = df.repartition(repartition_number)
     df = apply_schema(df, schema=schema)
     df.write.parquet(path=path, mode='overwrite', partitionBy=partition_cols)
-
-
-def uppercase_columns(df, col_list: List):
-    """
-    Rewrite the selected columns with upper cases
-    :param df: dataframe
-    :param col_list: List
-        string array of columns to be upper-cased
-    :return: df
-        dataframe
-    """
-    for col in col_list:
-        df = df.withColumn(col, F.upper(F.col(col)))
-        df = df.withColumn(col, F.regexp_replace(F.col(col), 'İ', 'I'))
-        df = df.withColumn(col, F.trim(F.col(col)))
-    return df
-
-
-def melt(df: DataFrame, key_cols: Iterable[str], value_cols: Iterable[str],
-         var_name: str = "variable", value_name: str = "value") -> DataFrame:
-    """Convert :class:`DataFrame` from wide to long format."""
-
-    # Create map<key: value>
-    vars_and_vals = F.create_map(
-        list(chain.from_iterable([
-            [F.lit(c), F.col(c)] for c in value_cols]
-        ))
-    )
-
-    df = (
-        df
-        .select(*key_cols, F.explode(vars_and_vals))
-        .withColumnRenamed('key', var_name)
-        .withColumnRenamed('value', value_name)
-        .filter(F.col(value_name).isNotNull())
-    )
-
-    return df

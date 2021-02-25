@@ -6,11 +6,11 @@ from pyspark.sql import functions as F
 from pyspark.sql.functions import create_map, lit, udf
 from pyspark.sql.types import DateType
 
-from scripts.utils import (
+from scripts.utils.helper import uppercase_columns
+from scripts.utils.io import (
     create_spark_session,
     provide_config,
     read_with_meta,
-    uppercase_columns,
     write_with_meta
 )
 
@@ -45,6 +45,14 @@ def rename(df):
     return df
 
 
+def control_input(df):
+    # get only 2016 data
+    df = df.filter(F.col('year') == 2016)
+    # immigration_id must be unique
+    df = df.drop_duplicates(['immigration_id'])
+    return df
+
+
 datetime_from_sas = udf(lambda x: datetime(1960, 1, 1) + timedelta(days=int(x)), DateType())
 
 
@@ -76,6 +84,7 @@ def main():
     df = replace_ids_with_values(df, mapping_config_path=mapping_config_path)
     df = uppercase_columns(df, ['i94port', 'i94addr', 'occup', 'gender'])
     df = rename(df)
+    df = control_input(df)
 
     write_with_meta(df, df_meta=config['output_meta'])
 

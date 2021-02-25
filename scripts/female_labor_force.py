@@ -1,10 +1,9 @@
-from scripts.utils import (
+from scripts.utils.helper import uppercase_columns, melt
+from scripts.utils.io import (
     create_spark_session,
     provide_config,
     read_with_meta,
-    uppercase_columns,
-    write_with_meta,
-    melt
+    write_with_meta
 )
 
 

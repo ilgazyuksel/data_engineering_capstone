@@ -238,8 +238,10 @@ data-transfer:
         "LandAndOceanAverageTemperatureUncertainty": float
     output_meta:
       path: "${commons.fact_path}/global_temperatures"
+      partition_cols: ["year"]
       schema:
         "date": date
+        "year": int
         "land_avg_temperature": float
         "land_avg_temperature_uncertainty": float
         "land_max_temperature": float
@@ -259,8 +261,10 @@ data-transfer:
         "AverageTemperatureUncertainty": float
     output_meta:
       path: "${commons.fact_path}/temperatures_by_country"
+      partition_cols: ["year"]
       schema:
         "date": date
+        "year": int
         "country": string
         "avg_temperature": float
         "avg_temperature_uncertainty": float
@@ -276,8 +280,10 @@ data-transfer:
         "AverageTemperatureUncertainty": float
     output_meta:
       path: "${commons.fact_path}/temperatures_by_state"
+      partition_cols: ["year"]
       schema:
         "date": date
+        "year": int
         "country": string
         "state": string
         "avg_temperature": float
@@ -296,8 +302,10 @@ data-transfer:
         "AverageTemperatureUncertainty": float
     output_meta:
       path: "${commons.fact_path}/temperatures_by_city"
+      partition_cols: ["year"]
       schema:
         "date": date
+        "year": int
         "country": string
         "city": string
         "latitude": float
