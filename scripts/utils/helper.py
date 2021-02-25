@@ -49,5 +49,5 @@ def melt(df: DataFrame, key_cols: Iterable[str], value_cols: Iterable[str],
             .withColumnRenamed('value', value_name)
             .filter(F.col(value_name).isNotNull())
     )
-    logging.info(f"Wide dataframe converted to long dataframe")
+    logging.info("Wide dataframe converted to long dataframe")
     return df
