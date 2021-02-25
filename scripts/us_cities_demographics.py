@@ -1,3 +1,6 @@
+"""
+US cities demographics etl script.
+"""
 from pyspark.sql import DataFrame
 
 from scripts.utils.helper import uppercase_columns

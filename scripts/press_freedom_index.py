@@ -1,3 +1,8 @@
+"""
+Press freedom index etl script.
+"""
+import logging
+
 from pyspark.sql import DataFrame
 from pyspark.sql import Window
 from pyspark.sql import functions as F
@@ -19,6 +24,7 @@ def add_rank_column(df: DataFrame) -> DataFrame:
     """
     w = Window.partitionBy('year').orderBy(F.col('press_freedom_index'))
     df = df.withColumn('press_freedom_rank', F.row_number().over(w))
+    logging.info("Press freedom rank calculated")
     return df
 
 

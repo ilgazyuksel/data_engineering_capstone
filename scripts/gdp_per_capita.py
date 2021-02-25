@@ -1,3 +1,6 @@
+"""
+Gdp per capita etl script.
+"""
 from scripts.utils.helper import uppercase_columns, melt
 from scripts.utils.io import (
     create_spark_session,

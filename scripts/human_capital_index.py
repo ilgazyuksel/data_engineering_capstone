@@ -1,3 +1,8 @@
+"""
+Human capital index etl script.
+"""
+import logging
+
 from pyspark.sql import DataFrame
 from pyspark.sql import Window
 from pyspark.sql import functions as F
@@ -19,6 +24,7 @@ def add_rank_column(df: DataFrame) -> DataFrame:
     """
     w = Window.partitionBy('year').orderBy(F.col('human_capital_index').desc())
     df = df.withColumn('human_capital_rank', F.row_number().over(w))
+    logging.info("Human capital rank calculated")
     return df
 
 

@@ -1,3 +1,6 @@
+"""
+Female labor force etl script.
+"""
 from pyspark.sql import DataFrame
 from pyspark.sql import functions as F
 

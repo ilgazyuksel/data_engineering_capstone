@@ -1,3 +1,8 @@
+"""
+Temperatures by state etl script.
+"""
+import logging
+
 from pyspark.sql import DataFrame
 from pyspark.sql import functions as F
 
@@ -36,6 +41,7 @@ def control_input(df: DataFrame) -> DataFrame:
     """
     df = df.filter(F.col('avg_temperature').isNotNull())
     df = df.drop_duplicates(['date', 'country', 'state'])
+    logging.info("Input controls completed")
     return df
 
 

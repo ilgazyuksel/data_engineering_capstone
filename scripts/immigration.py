@@ -1,3 +1,7 @@
+"""
+Immigration etl script.
+"""
+import logging
 from datetime import datetime, timedelta
 from itertools import chain
 
@@ -28,6 +32,7 @@ def replace_ids_with_values(df: DataFrame, mapping_config_path: str) -> DataFram
         map_col = create_map([lit(x) for x in chain(*replace_dict.items())])
         df = df.withColumn(column, map_col[df[column]])
         df = df.fillna('UNKNOWN', column)
+    logging.info("ID columns are replaced with values")
     return df
 
 
@@ -65,6 +70,7 @@ def control_input(df: DataFrame) -> DataFrame:
     """
     df = df.filter(F.col('year') == 2016)
     df = df.drop_duplicates(['immigration_id'])
+    logging.info("Input controls completed")
     return df
 
 
@@ -89,6 +95,7 @@ def convert_sas_to_date(df: DataFrame) -> DataFrame:
                     F.when(F.col('depdate') == '1960-01-01', None)
                     .otherwise(F.col('depdate')))
     )
+    logging.info("SAS date formats converted to datetime")
     return df
 
 
