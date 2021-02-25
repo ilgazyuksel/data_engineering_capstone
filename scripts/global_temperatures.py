@@ -1,13 +1,20 @@
+from pyspark.sql import DataFrame
+from pyspark.sql import functions as F
+
 from scripts.utils.io import (
     create_spark_session,
     provide_config,
     read_with_meta,
     write_with_meta
 )
-from pyspark.sql import functions as F
 
 
-def rename(df):
+def rename(df: DataFrame) -> DataFrame:
+    """
+    Rename dataframe columns
+    :param df: global temperatures dataframe
+    :return: global temperatures dataframe
+    """
     df = (
         df
         .withColumnRenamed("dt", "date")
@@ -25,6 +32,16 @@ def rename(df):
 
 
 def main():
+    """
+    Run pipeline:
+    - Create spark session
+    - Get config
+    - Read with meta
+    - Rename dataframe
+    - Add year column
+    - Write with meta
+    :return: None
+    """
     spark = create_spark_session()
 
     config_path = "scripts/config.yaml"

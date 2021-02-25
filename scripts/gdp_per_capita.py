@@ -8,6 +8,17 @@ from scripts.utils.io import (
 
 
 def main():
+    """
+    Run pipeline:
+    - Create spark session
+    - Get config
+    - Read with meta
+    - Uppercase columns
+    - Rename dataframe
+    - Convert wide dataframe to long
+    - Write with meta
+    :return: None
+    """
     spark = create_spark_session()
 
     config_path = "scripts/config.yaml"

@@ -1,3 +1,4 @@
+from pyspark.sql import DataFrame
 from pyspark.sql import Window
 from pyspark.sql import functions as F
 
@@ -10,22 +11,40 @@ from scripts.utils.io import (
 )
 
 
-def add_rank_column(df):
+def add_rank_column(df: DataFrame) -> DataFrame:
+    """
+    Calculate country's rank in terms of press freedom index
+    :param df: press freedom index dataframe
+    :return: press freedom index dataframe
+    """
     w = Window.partitionBy('year').orderBy(F.col('press_freedom_index'))
     df = df.withColumn('press_freedom_rank', F.row_number().over(w))
     return df
 
 
 def main():
+    """
+    Run pipeline:
+    - Create spark session
+    - Get config
+    - Read with meta
+    - Filter indicator column with press freedom index
+    - Uppercase columns
+    - Rename dataframe
+    - Convert wide dataframe to long
+    - Add rank column
+    - Write with meta
+    :return: None
+    """
     spark = create_spark_session()
 
     config_path = "scripts/config.yaml"
     config = provide_config(config_path).get('data-transfer').get('press_freedom_index')
 
     df = read_with_meta(spark, df_meta=config['input_meta'], header=True)
+    df = df.filter(F.col('Indicator') == 'Press Freedom Index').drop('Indicator')
     df = uppercase_columns(df, ['Country Name'])
     df = df.withColumnRenamed("Country Name", "country")
-    df = df.filter(F.col('Indicator') == 'Press Freedom Index').drop('Indicator')
 
     df_long = melt(
         df=df,

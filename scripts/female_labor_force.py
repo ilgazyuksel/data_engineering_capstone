@@ -1,3 +1,6 @@
+from pyspark.sql import DataFrame
+from pyspark.sql import functions as F
+
 from scripts.utils.helper import uppercase_columns, melt
 from scripts.utils.io import (
     create_spark_session,
@@ -7,7 +10,12 @@ from scripts.utils.io import (
 )
 
 
-def rename(df):
+def rename(df: DataFrame) -> DataFrame:
+    """
+    Rename dataframe columns
+    :param df: female labor force dataframe
+    :return: female labor force dataframe
+    """
     df = df.withColumnRenamed("Country Name", "country")
     for year in range(2011, 2021):
         df = df.withColumnRenamed(f"{year} [YR{year}]", str(year))
@@ -15,18 +23,24 @@ def rename(df):
 
 
 def main():
+    """
+    Run pipeline:
+    - Create spark session
+    - Get config
+    - Read with meta
+    - Filter series name column with female labor force
+    - Uppercase columns
+    - Rename dataframe
+    - Convert wide dataframe to long
+    - Write with meta
+    :return: None
+    """
     spark = create_spark_session()
 
     config_path = "scripts/config.yaml"
     config = provide_config(config_path).get('data-transfer').get('female_labor_force')
-    from pyspark.sql import functions as F
-
     df = read_with_meta(spark, df_meta=config['input_meta'], header=True)
-    df = (
-        df
-        .filter(F.col('Series Name') == 'Labor force, female (% of total labor force)')
-        .drop('Series Name')
-    )
+    df = df.filter(F.col('Series Name') == 'Labor force, female (% of total labor force)')
     df = uppercase_columns(df, ['Country Name'])
     df = rename(df)
 

@@ -15,7 +15,13 @@ from scripts.utils.io import (
 )
 
 
-def replace_ids_with_values(df: DataFrame, mapping_config_path: str):
+def replace_ids_with_values(df: DataFrame, mapping_config_path: str) -> DataFrame:
+    """
+    Replace ids with values in order to faster analytic processes.
+    :param df: immigration dataframe
+    :param mapping_config_path: Path of id-value mapping config
+    :return: immigration dataframe
+    """
     mapping = provide_config(mapping_config_path)
     for column in mapping.keys():
         replace_dict = mapping.get(column)
@@ -25,7 +31,12 @@ def replace_ids_with_values(df: DataFrame, mapping_config_path: str):
     return df
 
 
-def rename(df):
+def rename(df: DataFrame) -> DataFrame:
+    """
+    Rename dataframe columns
+    :param df: immigration dataframe
+    :return: immigration dataframe
+    """
     df = (
         df
         .withColumnRenamed("cicid", "immigration_id")
@@ -45,10 +56,14 @@ def rename(df):
     return df
 
 
-def control_input(df):
-    # get only 2016 data
+def control_input(df: DataFrame) -> DataFrame:
+    """
+    Get data only from 2016
+    Drop duplicates on unique keys
+    :param df: immigration dataframe
+    :return: immigration dataframe
+    """
     df = df.filter(F.col('year') == 2016)
-    # immigration_id must be unique
     df = df.drop_duplicates(['immigration_id'])
     return df
 
@@ -56,7 +71,12 @@ def control_input(df):
 datetime_from_sas = udf(lambda x: datetime(1960, 1, 1) + timedelta(days=int(x)), DateType())
 
 
-def convert_sas_to_date(df: DataFrame):
+def convert_sas_to_date(df: DataFrame) -> DataFrame:
+    """
+    Convert dates from sas format to datetime.
+    :param df: immigration dataframe
+    :return: immigration dataframe
+    """
     df = (
         df
         .fillna(0, ['arrdate', 'depdate'])
@@ -73,6 +93,19 @@ def convert_sas_to_date(df: DataFrame):
 
 
 def main():
+    """
+    Run pipeline:
+    - Create spark session
+    - Get config
+    - Read with meta
+    - Convert dates from sas format to datetime
+    - Replace ids with values
+    - Uppercase columns
+    - Rename dataframe
+    - Control input
+    - Write with meta
+    :return: None
+    """
     spark = create_spark_session()
 
     config_path = "scripts/config.yaml"

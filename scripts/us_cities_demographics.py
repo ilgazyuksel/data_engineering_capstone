@@ -1,3 +1,5 @@
+from pyspark.sql import DataFrame
+
 from scripts.utils.helper import uppercase_columns
 from scripts.utils.io import (
     create_spark_session,
@@ -7,7 +9,12 @@ from scripts.utils.io import (
 )
 
 
-def rename(df):
+def rename(df: DataFrame) -> DataFrame:
+    """
+    Rename dataframe columns
+    :param df: us cities demographics dataframe
+    :return: us cities demographics dataframe
+    """
     df = (
         df
         .withColumnRenamed("City", "city")
@@ -26,6 +33,16 @@ def rename(df):
 
 
 def main():
+    """
+    Run pipeline:
+    - Create spark session
+    - Get config
+    - Read with meta
+    - Uppercase columns
+    - Rename dataframe
+    - Write with meta
+    :return: None
+    """
     spark = create_spark_session()
 
     config_path = "scripts/config.yaml"

@@ -1,3 +1,4 @@
+from pyspark.sql import DataFrame
 from pyspark.sql import functions as F
 
 from scripts.utils.helper import uppercase_columns
@@ -9,7 +10,12 @@ from scripts.utils.io import (
 )
 
 
-def rename(df):
+def rename(df: DataFrame) -> DataFrame:
+    """
+    Rename dataframe columns
+    :param df: Temperatures by city dataframe
+    :return: Temperatures by city dataframe
+    """
     df = (
         df
         .withColumnRenamed("dt", "date")
@@ -23,13 +29,31 @@ def rename(df):
     return df
 
 
-def control_input(df):
+def control_input(df: DataFrame) -> DataFrame:
+    """
+    Remove rows with null avg temperature
+    Drop duplicates on unique keys
+    :param df: Temperatures by city dataframe
+    :return: Temperatures by city dataframe
+    """
     df = df.filter(F.col('avg_temperature').isNotNull())
     df = df.drop_duplicates(['date', 'country', 'city'])
     return df
 
 
 def main():
+    """
+    Run pipeline:
+    - Create spark session
+    - Get config
+    - Read with meta
+    - Uppercase columns
+    - Rename dataframe
+    - Control input
+    - Add year column
+    - Write with meta
+    :return: None
+    """
     spark = create_spark_session()
 
     config_path = "scripts/config.yaml"

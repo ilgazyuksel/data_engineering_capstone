@@ -1,3 +1,4 @@
+from pyspark.sql import DataFrame
 from pyspark.sql import Window
 from pyspark.sql import functions as F
 
@@ -10,13 +11,30 @@ from scripts.utils.io import (
 )
 
 
-def add_rank_column(df):
+def add_rank_column(df: DataFrame) -> DataFrame:
+    """
+    Calculate country's rank in terms of human capital index
+    :param df: human capital index dataframe
+    :return: human capital index dataframe
+    """
     w = Window.partitionBy('year').orderBy(F.col('human_capital_index').desc())
     df = df.withColumn('human_capital_rank', F.row_number().over(w))
     return df
 
 
 def main():
+    """
+    Run pipeline:
+    - Create spark session
+    - Get config
+    - Read with meta
+    - Uppercase columns
+    - Rename dataframe
+    - Convert wide dataframe to long
+    - Add rank column
+    - Write with meta
+    :return: None
+    """
     spark = create_spark_session()
 
     config_path = "scripts/config.yaml"
