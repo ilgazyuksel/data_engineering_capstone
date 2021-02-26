@@ -200,7 +200,7 @@ fact:
       immigration_id: int
       birth_year: int
       gender: string
-      nationality: string
+      origin_country_id: int
       arrival_date: date
       transportation_type: string
       visa_type: string
@@ -212,19 +212,19 @@ fact:
   gdp_per_capita:
     path: "${commons.fact_path}/gdp_per_capita"
     schema:
-      country: string
+      country_id: int
       year: int
       gdp_per_capita: float
   female_labor_force:
     path: "${commons.fact_path}/female_labor_force"
     schema:
-      country: string
+      country_id: int
       year: int
       female_labor_force_ratio: float
   human_capital_index:
     path: "${commons.fact_path}/human_capital_index"
     schema:
-      country: string
+      country_id: int
       year: int
       human_capital_index: float
       human_capital_rank: int
@@ -238,41 +238,47 @@ fact:
   us_cities_demographics:
     path: "${commons.fact_path}/us_cities_demographics"
     schema:
-      "city": string
-      "state": string
-      "median_age": int
-      "male_population": int
-      "female_population": int
-      "total_population": int
-      "veteran_population": int
-      "foreign_born_population": int
-      "average_household_size": float
-      "race": string
-      "count": int
+      city: string
+      state: string
+      median_age: int
+      male_population: int
+      female_population: int
+      total_population: int
+      veteran_population: int
+      foreign_born_population: int
+      average_household_size: float
+      race: string
+      count: int
   global_temperatures:
     path: "${commons.fact_path}/global_temperatures"
     partition_cols: ["year"]
     schema:
-      "date": date
-      "year": int
-      "land_avg_temperature": float
+      date: date
+      year: int
+      land_avg_temperature: float
   temperatures_by_country:
     path: "${commons.fact_path}/temperatures_by_country"
     partition_cols: ["year"]
     schema:
-      "date": date
-      "year": int
-      "country": string
-      "avg_temperature": float
+      date: date
+      year: int
+      country_id: int
+      avg_temperature: float
   temperatures_by_city:
     path: "${commons.fact_path}/temperatures_by_city"
     partition_cols: ["year"]
     schema:
-      "date": date
-      "year": int
-      "country": string
-      "city": string
-      "avg_temperature": float
+      date: date
+      year: int
+      country_id: int
+      city: string
+      avg_temperature: float
+dimension:
+  country:
+    path: "${commons.dimension_path}/country"
+    schema:
+      country_id: int
+      country_name: string
 scripts:
   immigration:
     input_meta:
@@ -349,3 +355,13 @@ scripts:
       path: "${fact.temperatures_by_city.path}"
       schema: "${fact.temperatures_by_city.schema}"
       partition_cols: "${fact.temperatures_by_country.partition_cols}"
+  country:
+    female_labor_force_meta: "${scripts.female_labor_force.input_meta}"
+    gdp_per_capita_meta: "${scripts.gdp_per_capita.input_meta}"
+    human_capital_index_meta: "${scripts.human_capital_index.input_meta}"
+    press_freedom_index_meta: "${scripts.press_freedom_index.input_meta}"
+    temperatures_by_city_meta: "${scripts.temperatures_by_city.input_meta}"
+    temperatures_by_country_meta: "${scripts.temperatures_by_country.input_meta}"
+    output_meta:
+      path: "${dimension.country.path}"
+      schema: "${dimension.country.schema}"
