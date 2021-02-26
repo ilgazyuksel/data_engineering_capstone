@@ -19,7 +19,7 @@ def rename(df: DataFrame) -> DataFrame:
     :param df: female labor force dataframe
     :return: female labor force dataframe
     """
-    df = df.withColumnRenamed("Country Name", "country")
+    df = df.withColumnRenamed("Country Name", "country_name")
     for year in range(2011, 2021):
         df = df.withColumnRenamed(f"{year} [YR{year}]", str(year))
     return df

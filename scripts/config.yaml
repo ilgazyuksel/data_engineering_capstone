@@ -281,80 +281,35 @@ dimension:
       country_name: string
 scripts:
   immigration:
-    input_meta:
-      path: "${data.immigration.path}"
-      data_format: "${data.immigration.data_format}"
-      schema: "${data.immigration.schema}"
-    output_meta:
-      path: "${fact}.immigration.path"
-      schema: "${fact}.immigration.schema"
+    input_meta: "${data.immigration}"
+    country_meta: "${dimension.country}"
+    output_meta: "${fact.immigration}"
   gdp_per_capita:
-    input_meta:
-      path: "${data.gdp_per_capita.path}"
-      data_format: "${data.gdp_per_capita.data_format}"
-      schema: "${data.gdp_per_capita.schema}"
-    output_meta:
-      path: "${fact}.gdp_per_capita.path"
-      schema: "${fact}.gdp_per_capita.schema"
+    input_meta: "${data.gdp_per_capita}"
+    country_meta: "${dimension.country}"
+    output_meta: "${fact.gdp_per_capita}"
   female_labor_force:
-    input_meta:
-      path: "${data.gender_indicators.path}"
-      data_format: "${data.gender_indicators.data_format}"
-      schema: "${data.gender_indicators.schema}"
-    output_meta:
-      path: "${fact.female_labor_force.path}"
-      schema: "${fact.female_labor_force.schema}"
+    input_meta: "${data.gender_indicators}"
+    country_meta: "${dimension.country}"
+    output_meta: "${fact.female_labor_force}"
   human_capital_index:
-    input_meta:
-      path: "${data.human_capital_index.path}"
-      data_format: "${data.human_capital_index.data_format}"
-      schema: "${data.human_capital_index.schema}"
-    output_meta:
-      path: "${fact.human_capital_index.path}"
-      schema: "${fact.human_capital_index.schema}"
+    input_meta: "${data.human_capital_index}"
+    country_meta: "${dimension.country}"
+    output_meta: "${fact.human_capital_index}"
   press_freedom_index:
-    input_meta:
-      path: "${data.press_freedom_index.path}"
-      data_format: "${data.press_freedom_index.data_format}"
-      schema: "${data.press_freedom_index.schema}"
-    output_meta:
-      path: "${fact.press_freedom_index.path}"
-      schema: "${fact.press_freedom_index.schema}"
+    input_meta: "${data.press_freedom_index}"
+    country_meta: "${dimension.country}"
+    output_meta: "${fact.press_freedom_index}"
   us_cities_demographics:
-    input_meta:
-      path: "${data.us_cities_demographics.path}"
-      data_format: "${data.us_cities_demographics.data_format}"
-      schema: "${data.us_cities_demographics.schema}"
-    output_meta:
-      path: "${fact.us_cities_demographics.path}"
-      schema: "${fact.us_cities_demographics.schema}"
+    input_meta: "${data.us_cities_demographics}"
+    output_meta: "${fact.us_cities_demographics}"
   global_temperatures:
-    input_meta:
-      path: "${data.global_temperatures.path}"
-      data_format: "${data.global_temperatures.data_format}"
-      schema: "${data.global_temperatures.schema}"
-    output_meta:
-      path: "${fact.global_temperatures.path}"
-      schema: "${fact.global_temperatures.schema}"
-      partition_cols: "${fact.temperatures_by_country.partition_cols}"
+    input_meta: "${data.global_temperatures}"
+    output_meta: "${fact.global_temperatures}"
   temperatures_by_country:
-    input_meta:
-      path: "${data.temperatures_by_country.path}"
-      data_format: "${data.temperatures_by_country.data_format}"
-      schema: "${data.temperatures_by_country.schema}"
-    output_meta:
-      path: "${fact.temperatures_by_country.path}"
-      schema: "${fact.temperatures_by_country.schema}"
-      partition_cols: "${fact.temperatures_by_country.partition_cols}"
-  temperatures_by_city:
-    input_meta:
-      path: "${data.temperatures_by_city.path}"
-      data_format: "${data.temperatures_by_city.data_format}"
-      schema: "${data.temperatures_by_city.schema}"
-    output_meta:
-      path: "${fact.temperatures_by_city.path}"
-      schema: "${fact.temperatures_by_city.schema}"
-      partition_cols: "${fact.temperatures_by_country.partition_cols}"
+    input_meta: "${data.temperatures_by_country}"
+    country_meta: "${dimension.country}"
+    output_meta: "${fact.temperatures_by_country}"
   country:
     female_labor_force_meta: "${scripts.female_labor_force.input_meta}"
     gdp_per_capita_meta: "${scripts.gdp_per_capita.input_meta}"
@@ -362,6 +317,4 @@ scripts:
     press_freedom_index_meta: "${scripts.press_freedom_index.input_meta}"
     temperatures_by_city_meta: "${scripts.temperatures_by_city.input_meta}"
     temperatures_by_country_meta: "${scripts.temperatures_by_country.input_meta}"
-    output_meta:
-      path: "${dimension.country.path}"
-      schema: "${dimension.country.schema}"
+    output_meta: "${dimension.country}"
