@@ -44,7 +44,7 @@ def main():
     spark = create_spark_session()
 
     config_path = "scripts/config.yaml"
-    config = provide_config(config_path).get('data-transfer').get('human_capital_index')
+    config = provide_config(config_path).get('scripts').get('human_capital_index')
 
     df = read_with_meta(spark, df_meta=config['input_meta'], header=True)
     df = uppercase_columns(df, ['Country Name'])

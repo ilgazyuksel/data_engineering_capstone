@@ -117,7 +117,7 @@ def main():
 
     config_path = "scripts/config.yaml"
     mapping_config_path = "scripts/immigration_data_map.yaml"
-    config = provide_config(config_path).get('data-transfer').get('immigration')
+    config = provide_config(config_path).get('scripts').get('immigration')
 
     df = read_with_meta(spark, df_meta=config['input_meta'])
     df = convert_sas_to_date(df)

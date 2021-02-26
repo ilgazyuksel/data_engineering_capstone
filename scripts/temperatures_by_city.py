@@ -26,10 +26,7 @@ def rename(df: DataFrame) -> DataFrame:
         .withColumnRenamed("dt", "date")
         .withColumnRenamed("Country", "country")
         .withColumnRenamed("City", "city")
-        .withColumnRenamed("Latitude", "latitude")
-        .withColumnRenamed("Longitude", "longitude")
         .withColumnRenamed("AverageTemperature", "avg_temperature")
-        .withColumnRenamed("AverageTemperatureUncertainty", "avg_temperature_uncertainty")
     )
     return df
 
@@ -63,7 +60,7 @@ def main():
     spark = create_spark_session()
 
     config_path = "scripts/config.yaml"
-    config = provide_config(config_path).get('data-transfer').get('temperatures_by_city')
+    config = provide_config(config_path).get('scripts').get('temperatures_by_city')
 
     df = read_with_meta(spark, df_meta=config['input_meta'], header=True)
     df = uppercase_columns(df, ['Country', 'City'])

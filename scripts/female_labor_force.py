@@ -41,7 +41,7 @@ def main():
     spark = create_spark_session()
 
     config_path = "scripts/config.yaml"
-    config = provide_config(config_path).get('data-transfer').get('female_labor_force')
+    config = provide_config(config_path).get('scripts').get('female_labor_force')
     df = read_with_meta(spark, df_meta=config['input_meta'], header=True)
     df = df.filter(F.col('Series Name') == 'Labor force, female (% of total labor force)')
     df = uppercase_columns(df, ['Country Name'])

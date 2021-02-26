@@ -45,7 +45,7 @@ def main():
     spark = create_spark_session()
 
     config_path = "scripts/config.yaml"
-    config = provide_config(config_path).get('data-transfer').get('press_freedom_index')
+    config = provide_config(config_path).get('scripts').get('press_freedom_index')
 
     df = read_with_meta(spark, df_meta=config['input_meta'], header=True)
     df = df.filter(F.col('Indicator') == 'Press Freedom Index').drop('Indicator')

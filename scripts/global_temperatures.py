@@ -48,7 +48,7 @@ def main():
     spark = create_spark_session()
 
     config_path = "scripts/config.yaml"
-    config = provide_config(config_path).get('data-transfer').get('global_temperatures')
+    config = provide_config(config_path).get('scripts').get('global_temperatures')
 
     df = read_with_meta(spark, df_meta=config['input_meta'], header=True)
     df = rename(df)
