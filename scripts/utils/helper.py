@@ -3,10 +3,11 @@ Helper methods.
 """
 import logging
 from itertools import chain
-from typing import Iterable
-from typing import List
+from typing import Dict, Iterable, List
 
 from pyspark.sql import DataFrame, functions as F
+
+from scripts.utils.io import read_with_meta
 
 
 def uppercase_columns(df, col_list: List):
@@ -50,4 +51,20 @@ def melt(df: DataFrame, key_cols: Iterable[str], value_cols: Iterable[str],
             .filter(F.col(value_name).isNotNull())
     )
     logging.info("Wide dataframe converted to long dataframe")
+    return df
+
+
+def get_country_id(spark, df: DataFrame, config: Dict) -> DataFrame:
+    """
+    Get country id from its dimension table
+    :param spark: Spark session
+    :param df: dataframe
+    :param config: string array of columns to be upper-cased
+    :return: dataframe
+    """
+    country = read_with_meta(spark, config['country_meta'])
+    key_col = 'country_name'
+    df = df.join(country, on=key_col, how='inner')
+    df = df.drop(key_col)
+    logging.info("Country name is converted to id from dimension table")
     return df

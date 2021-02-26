@@ -182,17 +182,6 @@ data:
       "Country": string
       "AverageTemperature": float
       "AverageTemperatureUncertainty": float
-  temperatures_by_city:
-    path: "${commons.data_path}/temperatures_by_city.csv"
-    data_format: "csv"
-    schema:
-      "dt": date
-      "Country": string
-      "City": string
-      "Latitude": float
-      "Longitude": float
-      "AverageTemperature": float
-      "AverageTemperatureUncertainty": float
 fact:
   immigration:
     path: "${commons.fact_path}/immigration"
@@ -231,7 +220,7 @@ fact:
   press_freedom_index:
     path: "${commons.fact_path}/press_freedom_index"
     schema:
-      country: string
+      country_id: int
       year: int
       press_freedom_index: float
       press_freedom_rank: int
@@ -264,18 +253,10 @@ fact:
       year: int
       country_id: int
       avg_temperature: float
-  temperatures_by_city:
-    path: "${commons.fact_path}/temperatures_by_city"
-    partition_cols: ["year"]
-    schema:
-      date: date
-      year: int
-      country_id: int
-      city: string
-      avg_temperature: float
 dimension:
   country:
     path: "${commons.dimension_path}/country"
+    data_format: "parquet"
     schema:
       country_id: int
       country_name: string
@@ -315,6 +296,5 @@ scripts:
     gdp_per_capita_meta: "${scripts.gdp_per_capita.input_meta}"
     human_capital_index_meta: "${scripts.human_capital_index.input_meta}"
     press_freedom_index_meta: "${scripts.press_freedom_index.input_meta}"
-    temperatures_by_city_meta: "${scripts.temperatures_by_city.input_meta}"
     temperatures_by_country_meta: "${scripts.temperatures_by_country.input_meta}"
     output_meta: "${dimension.country}"

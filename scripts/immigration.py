@@ -10,7 +10,7 @@ from pyspark.sql import functions as F
 from pyspark.sql.functions import create_map, lit, udf
 from pyspark.sql.types import DateType
 
-from scripts.utils.helper import uppercase_columns
+from scripts.utils.helper import get_country_id, uppercase_columns
 from scripts.utils.io import (
     create_spark_session,
     provide_config,
@@ -46,7 +46,7 @@ def rename(df: DataFrame) -> DataFrame:
         df
         .withColumnRenamed("cicid", "immigration_id")
         .withColumnRenamed("biryear", "birth_year")
-        .withColumnRenamed("i94res", "nationality")
+        .withColumnRenamed("i94res", "country_name")
         .withColumnRenamed("arrdate", "arrival_date")
         .withColumnRenamed("i94mode", "transportation_type")
         .withColumnRenamed("i94visa", "visa_type")
@@ -109,6 +109,7 @@ def main():
     - Replace ids with values
     - Uppercase columns
     - Rename dataframe
+    - Get origin country id
     - Control input
     - Write with meta
     :return: None
@@ -124,7 +125,9 @@ def main():
     df = replace_ids_with_values(df, mapping_config_path=mapping_config_path)
     df = uppercase_columns(df, ['i94port', 'i94addr', 'occup', 'gender'])
     df = rename(df)
+    df = get_country_id(spark, df, config)
     df = control_input(df)
+    df = df.withColumnRenamed('country_id', 'origin_country_id')
 
     write_with_meta(df, df_meta=config['output_meta'])
 

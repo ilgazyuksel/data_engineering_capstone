@@ -4,7 +4,7 @@ Female labor force etl script.
 from pyspark.sql import DataFrame
 from pyspark.sql import functions as F
 
-from scripts.utils.helper import uppercase_columns, melt
+from scripts.utils.helper import get_country_id, uppercase_columns, melt
 from scripts.utils.io import (
     create_spark_session,
     provide_config,
@@ -34,6 +34,7 @@ def main():
     - Filter series name column with female labor force
     - Uppercase columns
     - Rename dataframe
+    - Get country id
     - Convert wide dataframe to long
     - Write with meta
     :return: None
@@ -46,10 +47,11 @@ def main():
     df = df.filter(F.col('Series Name') == 'Labor force, female (% of total labor force)')
     df = uppercase_columns(df, ['Country Name'])
     df = rename(df)
+    df = get_country_id(spark, df, config)
 
     df_long = melt(
         df=df,
-        key_cols=['country'],
+        key_cols=['country_id'],
         value_cols=[str(i) for i in list(range(2011, 2021))],
         var_name='year',
         value_name='female_labor_force_ratio'

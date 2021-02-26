@@ -6,7 +6,7 @@ import logging
 from pyspark.sql import DataFrame
 from pyspark.sql import functions as F
 
-from scripts.utils.helper import uppercase_columns
+from scripts.utils.helper import get_country_id, uppercase_columns
 from scripts.utils.io import (
     create_spark_session,
     provide_config,
@@ -24,7 +24,7 @@ def rename(df: DataFrame) -> DataFrame:
     df = (
         df
         .withColumnRenamed("dt", "date")
-        .withColumnRenamed("Country", "country")
+        .withColumnRenamed("Country", "country_name")
         .withColumnRenamed("AverageTemperature", "avg_temperature")
     )
     return df
@@ -38,7 +38,7 @@ def control_input(df: DataFrame) -> DataFrame:
     :return: Temperatures by country dataframe
     """
     df = df.filter(F.col('avg_temperature').isNotNull())
-    df = df.drop_duplicates(['date', 'country'])
+    df = df.drop_duplicates(['date', 'country_name'])
     logging.info("Input controls completed")
     return df
 
@@ -51,6 +51,7 @@ def main():
     - Read with meta
     - Uppercase columns
     - Rename dataframe
+    - Get country id
     - Control input
     - Add year column
     - Write with meta
@@ -65,6 +66,7 @@ def main():
     df = uppercase_columns(df, ['Country'])
     df = rename(df)
     df = control_input(df)
+    df = get_country_id(spark, df, config)
 
     df = df.withColumn('year', F.year('date'))
     write_with_meta(df, df_meta=config['output_meta'])
