@@ -204,6 +204,7 @@ fact:
       country_id: int
       year: int
       gdp_per_capita: float
+      gdp_per_capita_rank: int
   female_labor_force:
     path: "${commons.fact_path}/female_labor_force"
     schema:

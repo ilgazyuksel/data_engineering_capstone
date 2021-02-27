@@ -1,6 +1,11 @@
 """
 Gdp per capita etl script.
 """
+import logging
+
+from pyspark.sql import DataFrame, Window
+from pyspark.sql import functions as F
+
 from scripts.utils.helper import get_country_id, uppercase_columns, melt
 from scripts.utils.io import (
     create_spark_session,
@@ -8,6 +13,18 @@ from scripts.utils.io import (
     read_with_meta,
     write_with_meta
 )
+
+
+def add_rank_column(df: DataFrame) -> DataFrame:
+    """
+    Calculate country's rank in terms of gdp per capita
+    :param df: gdp per capita dataframe
+    :return: gdp per capita dataframe
+    """
+    w = Window.partitionBy('year').orderBy(F.col('gdp_per_capita').desc())
+    df = df.withColumn('gdp_per_capita_rank', F.row_number().over(w))
+    logging.info("GDP per capita rank calculated")
+    return df
 
 
 def main():
@@ -20,6 +37,7 @@ def main():
     - Rename dataframe
     - Get country id
     - Convert wide dataframe to long
+    - Add rank column
     - Write with meta
     :return: None
     """
@@ -40,6 +58,7 @@ def main():
         var_name='year',
         value_name='gdp_per_capita'
     )
+    df_long = add_rank_column(df_long)
 
     write_with_meta(df_long, df_meta=config['output_meta'])
 

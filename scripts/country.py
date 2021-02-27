@@ -4,8 +4,7 @@ Country etl script.
 import logging
 from itertools import chain
 
-from pyspark.sql import DataFrame
-from pyspark.sql import Window
+from pyspark.sql import DataFrame, Window
 from pyspark.sql import functions as F
 from pyspark.sql.functions import create_map, lit
 

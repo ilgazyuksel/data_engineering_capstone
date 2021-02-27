@@ -3,8 +3,7 @@ Human capital index etl script.
 """
 import logging
 
-from pyspark.sql import DataFrame
-from pyspark.sql import Window
+from pyspark.sql import DataFrame, Window
 from pyspark.sql import functions as F
 
 from scripts.utils.helper import get_country_id, uppercase_columns, melt
