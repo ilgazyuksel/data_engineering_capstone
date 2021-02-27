@@ -1,30 +1,13 @@
 """
 Human capital index etl script.
 """
-import logging
-
-from pyspark.sql import DataFrame, Window
-from pyspark.sql import functions as F
-
-from scripts.utils.helper import get_country_id, uppercase_columns, melt
+from scripts.utils.helper import add_rank_column, get_country_id, uppercase_columns, melt
 from scripts.utils.io import (
     create_spark_session,
     provide_config,
     read_with_meta,
     write_with_meta
 )
-
-
-def add_rank_column(df: DataFrame) -> DataFrame:
-    """
-    Calculate country's rank in terms of human capital index
-    :param df: human capital index dataframe
-    :return: human capital index dataframe
-    """
-    w = Window.partitionBy('year').orderBy(F.col('human_capital_index').desc())
-    df = df.withColumn('human_capital_rank', F.row_number().over(w))
-    logging.info("Human capital rank calculated")
-    return df
 
 
 def main():
@@ -58,7 +41,8 @@ def main():
         var_name='year',
         value_name='human_capital_index'
     )
-    df_long = add_rank_column(df=df_long)
+    df_long = add_rank_column(df=df_long, partition_col='year', order_by_col='human_capital_index',
+                              rank_col='human_capital_rank', ascending=False)
 
     write_with_meta(df=df_long, df_meta=config['output_meta'])
 

@@ -5,7 +5,7 @@ import logging
 from itertools import chain
 from typing import Dict, Iterable, List
 
-from pyspark.sql import DataFrame, functions as F
+from pyspark.sql import DataFrame, Window, functions as F
 
 from scripts.utils.io import read_with_meta
 
@@ -81,4 +81,25 @@ def add_decade_column(df: DataFrame, date_col: str = 'date') -> DataFrame:
     df = df.withColumn('decade', (F.floor(F.col('year') / 10) * 10).cast('string'))
     df = df.withColumn('decade', F.concat('decade', F.lit('s')))
     logging.info("Decade and year columns are generated from date column")
+    return df
+
+
+def add_rank_column(df: DataFrame, partition_col: str, order_by_col: str, rank_col: str,
+                    ascending: bool = False) -> DataFrame:
+    """
+    Add rank column by partitions
+
+    :param df: Dataframe to add rank column
+    :param partition_col: Partition columns for ranking
+    :param order_by_col: Sort column for ranking
+    :param rank_col: Name of rank column to be added
+    :param ascending: Indicates the sorting is ascending or descending
+    :return:
+    """
+    if not ascending:
+        w = Window.partitionBy(partition_col).orderBy(F.col(order_by_col).desc())
+    else:
+        w = Window.partitionBy(partition_col).orderBy(order_by_col)
+    df = df.withColumn(rank_col, F.row_number().over(w))
+    logging.info(f"{rank_col} calculated by {partition_col}")
     return df
