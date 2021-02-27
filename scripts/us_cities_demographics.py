@@ -52,10 +52,10 @@ def main():
     config = provide_config(config_path).get('scripts').get('us_cities_demographics')
 
     df = read_with_meta(spark, df_meta=config['input_meta'], header=True, sep=';')
-    df = uppercase_columns(df, ['City', 'State', 'Race'])
-    df = rename(df)
+    df = uppercase_columns(df=df, col_list=['City', 'State', 'Race'])
+    df = rename(df=df)
 
-    write_with_meta(df, df_meta=config['output_meta'])
+    write_with_meta(df=df, df_meta=config['output_meta'])
 
 
 if __name__ == "__main__":

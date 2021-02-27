@@ -121,15 +121,15 @@ def main():
     config = provide_config(config_path).get('scripts').get('immigration')
 
     df = read_with_meta(spark, df_meta=config['input_meta'])
-    df = convert_sas_to_date(df)
-    df = replace_ids_with_values(df, mapping_config_path=mapping_config_path)
-    df = uppercase_columns(df, ['i94port', 'i94addr', 'occup', 'gender'])
-    df = rename(df)
-    df = get_country_id(spark, df, config)
-    df = control_input(df)
+    df = convert_sas_to_date(df=df)
+    df = replace_ids_with_values(df=df, mapping_config_path=mapping_config_path)
+    df = uppercase_columns(df=df, col_list=['i94port', 'i94addr', 'occup', 'gender'])
+    df = rename(df=df)
+    df = get_country_id(spark, df=df, config=config)
+    df = control_input(df=df)
     df = df.withColumnRenamed('country_id', 'origin_country_id')
 
-    write_with_meta(df, df_meta=config['output_meta'])
+    write_with_meta(df=df, df_meta=config['output_meta'])
 
 
 if __name__ == "__main__":

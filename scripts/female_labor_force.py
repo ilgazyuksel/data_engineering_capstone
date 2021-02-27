@@ -45,9 +45,9 @@ def main():
     config = provide_config(config_path).get('scripts').get('female_labor_force')
     df = read_with_meta(spark, df_meta=config['input_meta'], header=True)
     df = df.filter(F.col('Series Name') == 'Labor force, female (% of total labor force)')
-    df = uppercase_columns(df, ['Country Name'])
-    df = rename(df)
-    df = get_country_id(spark, df, config)
+    df = uppercase_columns(df=df, col_list=['Country Name'])
+    df = rename(df=df)
+    df = get_country_id(spark, df=df, config=config)
 
     df_long = melt(
         df=df,
@@ -57,7 +57,7 @@ def main():
         value_name='female_labor_force_ratio'
     )
 
-    write_with_meta(df_long, df_meta=config['output_meta'])
+    write_with_meta(df=df_long, df_meta=config['output_meta'])
 
 
 if __name__ == "__main__":

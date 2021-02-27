@@ -47,9 +47,9 @@ def main():
     config = provide_config(config_path).get('scripts').get('human_capital_index')
 
     df = read_with_meta(spark, df_meta=config['input_meta'], header=True)
-    df = uppercase_columns(df, ['Country Name'])
+    df = uppercase_columns(df=df, col_list=['Country Name'])
     df = df.withColumnRenamed("Country Name", "country_name")
-    df = get_country_id(spark, df, config)
+    df = get_country_id(spark, df=df, config=config)
 
     df_long = melt(
         df=df,
@@ -58,9 +58,9 @@ def main():
         var_name='year',
         value_name='human_capital_index'
     )
-    df_long = add_rank_column(df_long)
+    df_long = add_rank_column(df=df_long)
 
-    write_with_meta(df_long, df_meta=config['output_meta'])
+    write_with_meta(df=df_long, df_meta=config['output_meta'])
 
 
 if __name__ == "__main__":

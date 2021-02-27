@@ -6,7 +6,7 @@ import logging
 from pyspark.sql import DataFrame
 from pyspark.sql import functions as F
 
-from scripts.utils.helper import get_country_id, uppercase_columns
+from scripts.utils.helper import add_decade_column, get_country_id, uppercase_columns
 from scripts.utils.io import (
     create_spark_session,
     provide_config,
@@ -53,7 +53,7 @@ def main():
     - Rename dataframe
     - Get country id
     - Control input
-    - Add year column
+    - Add decade column
     - Write with meta
     :return: None
     """
@@ -63,13 +63,13 @@ def main():
     config = provide_config(config_path).get('scripts').get('temperatures_by_country')
 
     df = read_with_meta(spark, df_meta=config['input_meta'], header=True)
-    df = uppercase_columns(df, ['Country'])
-    df = rename(df)
-    df = control_input(df)
-    df = get_country_id(spark, df, config)
+    df = uppercase_columns(df=df, col_list=['Country'])
+    df = rename(df=df)
+    df = control_input(df=df)
+    df = get_country_id(spark, df=df, config=config)
+    df = add_decade_column(df=df, date_col='date')
 
-    df = df.withColumn('year', F.year('date'))
-    write_with_meta(df, df_meta=config['output_meta'])
+    write_with_meta(df=df, df_meta=config['output_meta'])
 
 
 if __name__ == "__main__":

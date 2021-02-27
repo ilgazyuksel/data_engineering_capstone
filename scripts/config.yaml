@@ -241,17 +241,19 @@ fact:
       count: int
   global_temperatures:
     path: "${commons.fact_path}/global_temperatures"
-    partition_cols: ["year"]
+    partition_cols: ["decade"]
     schema:
       date: date
       year: int
+      decade: string
       land_avg_temperature: float
   temperatures_by_country:
     path: "${commons.fact_path}/temperatures_by_country"
-    partition_cols: ["year"]
+    partition_cols: ["decade"]
     schema:
       date: date
       year: int
+      decade: string
       country_id: int
       avg_temperature: float
 dimension:

@@ -140,17 +140,17 @@ def main():
     (
         female_labor_force, gdp_per_capita, human_capital_index, press_freedom_index,
         temperatures_by_country
-    ) = read_data(spark, config)
+    ) = read_data(spark, config=config)
     df = merge_country_names(
         female_labor_force, gdp_per_capita, human_capital_index, press_freedom_index,
         temperatures_by_country
     )
 
     mapping_config_path = "scripts/country_correction.yaml"
-    df = fix_corrupted_country_names(df, mapping_config_path)
+    df = fix_corrupted_country_names(df=df, mapping_config_path=mapping_config_path)
     df = df.withColumn('country_id', F.row_number().over(Window.orderBy('country_name')))
 
-    write_with_meta(df, df_meta=config['output_meta'])
+    write_with_meta(df=df, df_meta=config['output_meta'])
 
 
 if __name__ == "__main__":

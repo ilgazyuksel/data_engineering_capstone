@@ -10,7 +10,7 @@ from pyspark.sql import DataFrame, functions as F
 from scripts.utils.io import read_with_meta
 
 
-def uppercase_columns(df, col_list: List):
+def uppercase_columns(df: DataFrame, col_list: List) -> DataFrame:
     """
     Rewrite the selected columns with upper cases
     :param df: dataframe
@@ -67,4 +67,18 @@ def get_country_id(spark, df: DataFrame, config: Dict) -> DataFrame:
     df = df.join(country, on=key_col, how='inner')
     df = df.drop(key_col)
     logging.info("Country name is converted to id from dimension table")
+    return df
+
+
+def add_decade_column(df: DataFrame, date_col: str = 'date') -> DataFrame:
+    """
+    Add year and decade columns from date column.
+    :param df: dataframe including date column
+    :param date_col: column name of date
+    :return: dataframe
+    """
+    df = df.withColumn('year', F.year(date_col))
+    df = df.withColumn('decade', (F.floor(F.col('year') / 10) * 10).cast('string'))
+    df = df.withColumn('decade', F.concat('decade', F.lit('s')))
+    logging.info("Decade and year columns are generated from date column")
     return df
