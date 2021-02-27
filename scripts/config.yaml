@@ -91,22 +91,6 @@ data:
       "2018": float
       "2019": float
       "2020": float
-  gender_indicators:
-    path: "${commons.data_path}/gender_indicators.csv"
-    data_format: "csv"
-    schema:
-      "Series Name": string
-      "Country Name": string
-      "2011 [YR2011]": float
-      "2012 [YR2012]": float
-      "2013 [YR2013]": float
-      "2014 [YR2014]": float
-      "2015 [YR2015]": float
-      "2016 [YR2016]": float
-      "2017 [YR2017]": float
-      "2018 [YR2018]": float
-      "2019 [YR2019]": float
-      "2020 [YR2020]": float
   human_capital_index:
     path: "${commons.data_path}/human_capital_index.csv"
     data_format: "csv"
@@ -205,12 +189,6 @@ fact:
       year: int
       gdp_per_capita: float
       gdp_per_capita_rank: int
-  female_labor_force:
-    path: "${commons.fact_path}/female_labor_force"
-    schema:
-      country_id: int
-      year: int
-      female_labor_force_ratio: float
   human_capital_index:
     path: "${commons.fact_path}/human_capital_index"
     schema:
@@ -272,10 +250,6 @@ scripts:
     input_meta: "${data.gdp_per_capita}"
     country_meta: "${dimension.country}"
     output_meta: "${fact.gdp_per_capita}"
-  female_labor_force:
-    input_meta: "${data.gender_indicators}"
-    country_meta: "${dimension.country}"
-    output_meta: "${fact.female_labor_force}"
   human_capital_index:
     input_meta: "${data.human_capital_index}"
     country_meta: "${dimension.country}"
@@ -295,7 +269,6 @@ scripts:
     country_meta: "${dimension.country}"
     output_meta: "${fact.temperatures_by_country}"
   country:
-    female_labor_force_meta: "${scripts.female_labor_force.input_meta}"
     gdp_per_capita_meta: "${scripts.gdp_per_capita.input_meta}"
     human_capital_index_meta: "${scripts.human_capital_index.input_meta}"
     press_freedom_index_meta: "${scripts.press_freedom_index.input_meta}"

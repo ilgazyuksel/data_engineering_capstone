@@ -46,11 +46,6 @@ def read_data(spark, config: dict) -> tuple:
     :param config: config including input meta
     :return: dataframe tuple
     """
-    female_labor_force = read_with_meta(
-        spark,
-        df_meta=config['female_labor_force_meta'],
-        header=True
-    )
     gdp_per_capita = read_with_meta(
         spark,
         df_meta=config['gdp_per_capita_meta'],
@@ -71,8 +66,7 @@ def read_data(spark, config: dict) -> tuple:
         df_meta=config['temperatures_by_country_meta'],
         header=True
     )
-    return (female_labor_force, gdp_per_capita, human_capital_index, press_freedom_index,
-            temperatures_by_country)
+    return gdp_per_capita, human_capital_index, press_freedom_index, temperatures_by_country
 
 
 def get_country_names(df: DataFrame, col: str) -> DataFrame:
@@ -88,29 +82,26 @@ def get_country_names(df: DataFrame, col: str) -> DataFrame:
     return df
 
 
-def merge_country_names(female_labor_force: DataFrame, gdp_per_capita: DataFrame,
-                        human_capital_index: DataFrame, press_freedom_index: DataFrame,
-                        temperatures_by_country: DataFrame) -> DataFrame:
+def merge_country_names(gdp_per_capita: DataFrame, human_capital_index: DataFrame,
+                        press_freedom_index: DataFrame, temperatures_by_country: DataFrame
+                        ) -> DataFrame:
     """
     Get unique country values of each dataframe
     Merge all unique values to single dimension data
 
-    :param female_labor_force: female_labor_force dataframe
     :param gdp_per_capita: gdp_per_capita dataframe
     :param human_capital_index: human_capital_index dataframe
     :param press_freedom_index: press_freedom_index dataframe
     :param temperatures_by_country: temperatures_by_country dataframe
     :return:
     """
-    female_labor_force = get_country_names(female_labor_force, 'Country Name')
     gdp_per_capita = get_country_names(gdp_per_capita, 'Country Name')
     human_capital_index = get_country_names(human_capital_index, 'Country Name')
     press_freedom_index = get_country_names(press_freedom_index, 'Country Name')
     temperatures_by_country = get_country_names(temperatures_by_country, 'Country')
 
     country = (
-        female_labor_force
-        .unionByName(gdp_per_capita)
+        gdp_per_capita
         .unionByName(human_capital_index)
         .unionByName(press_freedom_index)
         .unionByName(temperatures_by_country)
@@ -138,12 +129,10 @@ def main():
     config = provide_config(config_path).get('scripts').get('country')
 
     (
-        female_labor_force, gdp_per_capita, human_capital_index, press_freedom_index,
-        temperatures_by_country
+        gdp_per_capita, human_capital_index, press_freedom_index, temperatures_by_country
     ) = read_data(spark, config=config)
     df = merge_country_names(
-        female_labor_force, gdp_per_capita, human_capital_index, press_freedom_index,
-        temperatures_by_country
+        gdp_per_capita, human_capital_index, press_freedom_index, temperatures_by_country
     )
 
     mapping_config_path = "scripts/country_correction.yaml"
