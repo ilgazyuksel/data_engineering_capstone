@@ -67,7 +67,13 @@ def read_data(spark, config: dict) -> tuple:
         df_meta=config['temperatures_by_country_meta'],
         header=True
     )
-    return gdp_per_capita, human_capital_index, press_freedom_index, temperatures_by_country
+    immigration = read_with_meta(
+        spark,
+        df_meta=config['immigration_meta'],
+        header=True
+    )
+    return (gdp_per_capita, human_capital_index, press_freedom_index, temperatures_by_country,
+            immigration)
 
 
 def get_country_names(df: DataFrame, col: str) -> DataFrame:
@@ -84,7 +90,8 @@ def get_country_names(df: DataFrame, col: str) -> DataFrame:
 
 
 def merge_country_names(gdp_per_capita: DataFrame, human_capital_index: DataFrame,
-                        press_freedom_index: DataFrame, temperatures_by_country: DataFrame
+                        press_freedom_index: DataFrame, temperatures_by_country: DataFrame,
+                        immigration: DataFrame
                         ) -> DataFrame:
     """
     Get unique country values of each dataframe
@@ -94,18 +101,21 @@ def merge_country_names(gdp_per_capita: DataFrame, human_capital_index: DataFram
     :param human_capital_index: human_capital_index dataframe
     :param press_freedom_index: press_freedom_index dataframe
     :param temperatures_by_country: temperatures_by_country dataframe
+    :param immigration: immigration dataframe
     :return:
     """
     gdp_per_capita = get_country_names(gdp_per_capita, 'Country Name')
     human_capital_index = get_country_names(human_capital_index, 'Country Name')
     press_freedom_index = get_country_names(press_freedom_index, 'Country Name')
     temperatures_by_country = get_country_names(temperatures_by_country, 'Country')
+    immigration = get_country_names(immigration, 'i94res')
 
     country = (
         gdp_per_capita
         .unionByName(human_capital_index)
         .unionByName(press_freedom_index)
         .unionByName(temperatures_by_country)
+        .unionByName(immigration)
         .drop_duplicates()
     )
 
@@ -131,10 +141,12 @@ def main():
     mapping_config_path = config.get('mapping_config_path')
 
     (
-        gdp_per_capita, human_capital_index, press_freedom_index, temperatures_by_country
+        gdp_per_capita, human_capital_index, press_freedom_index, temperatures_by_country,
+        immigration
     ) = read_data(spark, config=config)
     df = merge_country_names(
-        gdp_per_capita, human_capital_index, press_freedom_index, temperatures_by_country
+        gdp_per_capita, human_capital_index, press_freedom_index, temperatures_by_country,
+        immigration
     )
 
     df = fix_corrupted_country_names(df=df, mapping_config_path=mapping_config_path)

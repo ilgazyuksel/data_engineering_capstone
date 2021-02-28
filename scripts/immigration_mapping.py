@@ -46,7 +46,6 @@ def main():
     spark = create_spark_session()
 
     config_path = get_config_path_from_cli()
-    config_path = 'scripts/config.yaml'
     config = provide_config(config_path).get('scripts').get('immigration_mapping')
     mapping_config_path = config.get('mapping_config_path')
 

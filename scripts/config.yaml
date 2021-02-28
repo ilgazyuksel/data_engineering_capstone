@@ -1,32 +1,14 @@
 commons:
-  # file_schema: "s3://"
-  # bucket_name: "ilgazy-udacity/"
-  file_schema: .
-  bucket_name: /
-  fact_path: "${commons.file_schema}${commons.bucket_name}fact"
-  dimension_path: "${commons.file_schema}${commons.bucket_name}dimension"
+  file_schema: "s3://"
+  bucket_name: "ilgazy-udacity/"
+  # file_schema: .
+  # bucket_name: /
   data_path: "${commons.file_schema}${commons.bucket_name}data"
+  dimension_path: "${commons.file_schema}${commons.bucket_name}dimension"
+  fact_path: "${commons.file_schema}${commons.bucket_name}fact"
   staging_path: "${commons.file_schema}${commons.bucket_name}staging"
   scripts_path: "${commons.file_schema}${commons.bucket_name}scripts"
 data:
-  immigration:
-    path: "${commons.data_path}/immigration"
-    data_format: "parquet"
-    schema:
-      cicid: int
-      i94yr: int
-      i94mon: int
-      i94cit: int
-      i94res: int
-      i94port: string
-      arrdate: int
-      depdate: int
-      i94mode: int
-      i94addr: string
-      i94visa: int
-      occup: string
-      biryear: int
-      gender: string
   gdp_per_capita:
     path: "${commons.data_path}/gdp_per_capita.csv"
     data_format: "csv"
@@ -93,6 +75,19 @@ data:
       "2018": float
       "2019": float
       "2020": float
+  global_temperatures:
+    path: "${commons.data_path}/global_temperatures.csv"
+    data_format: "csv"
+    schema:
+      "dt": date
+      "LandAverageTemperature": float
+      "LandAverageTemperatureUncertainty": float
+      "LandMaxTemperature": float
+      "LandMaxTemperatureUncertainty": float
+      "LandMinTemperature": float
+      "LandMinTemperatureUncertainty": float
+      "LandAndOceanAverageTemperature": float
+      "LandAndOceanAverageTemperatureUncertainty": float
   human_capital_index:
     path: "${commons.data_path}/human_capital_index.csv"
     data_format: "csv"
@@ -109,6 +104,24 @@ data:
       "2018": float
       "2019": float
       "2020": float
+  immigration:
+    path: "${commons.data_path}/immigration"
+    data_format: "parquet"
+    schema:
+      cicid: int
+      i94yr: int
+      i94mon: int
+      i94cit: int
+      i94res: int
+      i94port: string
+      arrdate: int
+      depdate: int
+      i94mode: int
+      i94addr: string
+      i94visa: int
+      occup: string
+      biryear: int
+      gender: string
   press_freedom_index:
     path: "${commons.data_path}/press_freedom_index.csv"
     data_format: "csv"
@@ -132,6 +145,14 @@ data:
       "2017": float
       "2018": float
       "2019": float
+  temperatures_by_country:
+    path: "${commons.data_path}/temperatures_by_country.csv"
+    data_format: "csv"
+    schema:
+      "dt": date
+      "Country": string
+      "AverageTemperature": float
+      "AverageTemperatureUncertainty": float
   us_cities_demographics:
     path: "${commons.data_path}/us_cities_demographics.csv"
     data_format: "csv"
@@ -147,27 +168,6 @@ data:
       "Average Household Size": float
       "Race": string
       "Count": int
-  global_temperatures:
-    path: "${commons.data_path}/global_temperatures.csv"
-    data_format: "csv"
-    schema:
-      "dt": date
-      "LandAverageTemperature": float
-      "LandAverageTemperatureUncertainty": float
-      "LandMaxTemperature": float
-      "LandMaxTemperatureUncertainty": float
-      "LandMinTemperature": float
-      "LandMinTemperatureUncertainty": float
-      "LandAndOceanAverageTemperature": float
-      "LandAndOceanAverageTemperatureUncertainty": float
-  temperatures_by_country:
-    path: "${commons.data_path}/temperatures_by_country.csv"
-    data_format: "csv"
-    schema:
-      "dt": date
-      "Country": string
-      "AverageTemperature": float
-      "AverageTemperatureUncertainty": float
 staging:
   immigration:
     path: "${commons.staging_path}/immigration"
@@ -188,6 +188,28 @@ staging:
       biryear: int
       gender: string
 fact:
+  gdp_per_capita:
+    path: "${commons.fact_path}/gdp_per_capita"
+    schema:
+      country_id: int
+      year: int
+      gdp_per_capita: float
+      gdp_per_capita_rank: int
+  global_temperatures:
+    path: "${commons.fact_path}/global_temperatures"
+    partition_cols: [ "decade" ]
+    schema:
+      date: date
+      year: int
+      decade: string
+      land_avg_temperature: float
+  human_capital_index:
+    path: "${commons.fact_path}/human_capital_index"
+    schema:
+      country_id: int
+      year: int
+      human_capital_index: float
+      human_capital_rank: int
   immigration:
     path: "${commons.fact_path}/immigration"
     schema:
@@ -203,20 +225,6 @@ fact:
       residence_city: string
       job: string
       departure_date: date
-  gdp_per_capita:
-    path: "${commons.fact_path}/gdp_per_capita"
-    schema:
-      country_id: int
-      year: int
-      gdp_per_capita: float
-      gdp_per_capita_rank: int
-  human_capital_index:
-    path: "${commons.fact_path}/human_capital_index"
-    schema:
-      country_id: int
-      year: int
-      human_capital_index: float
-      human_capital_rank: int
   press_freedom_index:
     path: "${commons.fact_path}/press_freedom_index"
     schema:
@@ -224,6 +232,15 @@ fact:
       year: int
       press_freedom_index: float
       press_freedom_rank: int
+  temperatures_by_country:
+    path: "${commons.fact_path}/temperatures_by_country"
+    partition_cols: [ "decade" ]
+    schema:
+      date: date
+      year: int
+      decade: string
+      country_id: int
+      avg_temperature: float
   us_cities_demographics:
     path: "${commons.fact_path}/us_cities_demographics"
     schema:
@@ -238,23 +255,6 @@ fact:
       average_household_size: float
       race: string
       count: int
-  global_temperatures:
-    path: "${commons.fact_path}/global_temperatures"
-    partition_cols: [ "decade" ]
-    schema:
-      date: date
-      year: int
-      decade: string
-      land_avg_temperature: float
-  temperatures_by_country:
-    path: "${commons.fact_path}/temperatures_by_country"
-    partition_cols: [ "decade" ]
-    schema:
-      date: date
-      year: int
-      decade: string
-      country_id: int
-      avg_temperature: float
 dimension:
   country:
     path: "${commons.dimension_path}/country"
@@ -263,36 +263,6 @@ dimension:
       country_id: int
       country_name: string
 scripts:
-  immigration:
-    input_meta: "${staging.immigration}"
-    country_meta: "${dimension.country}"
-    output_meta: "${fact.immigration}"
-  immigration_mapping:
-    input_meta: "${data.immigration}"
-    mapping_config_path: "${commons.scripts_path}/immigration_data_map.yaml"
-    output_meta: "${staging.immigration}"
-  gdp_per_capita:
-    input_meta: "${data.gdp_per_capita}"
-    country_meta: "${dimension.country}"
-    output_meta: "${fact.gdp_per_capita}"
-  human_capital_index:
-    input_meta: "${data.human_capital_index}"
-    country_meta: "${dimension.country}"
-    output_meta: "${fact.human_capital_index}"
-  press_freedom_index:
-    input_meta: "${data.press_freedom_index}"
-    country_meta: "${dimension.country}"
-    output_meta: "${fact.press_freedom_index}"
-  us_cities_demographics:
-    input_meta: "${data.us_cities_demographics}"
-    output_meta: "${fact.us_cities_demographics}"
-  global_temperatures:
-    input_meta: "${data.global_temperatures}"
-    output_meta: "${fact.global_temperatures}"
-  temperatures_by_country:
-    input_meta: "${data.temperatures_by_country}"
-    country_meta: "${dimension.country}"
-    output_meta: "${fact.temperatures_by_country}"
   country:
     gdp_per_capita_meta: "${scripts.gdp_per_capita.input_meta}"
     human_capital_index_meta: "${scripts.human_capital_index.input_meta}"
@@ -301,3 +271,33 @@ scripts:
     immigration_meta: "${scripts.immigration.input_meta}"
     mapping_config_path: "${commons.scripts_path}/country_correction.yaml"
     output_meta: "${dimension.country}"
+  gdp_per_capita:
+    input_meta: "${data.gdp_per_capita}"
+    country_meta: "${dimension.country}"
+    output_meta: "${fact.gdp_per_capita}"
+  global_temperatures:
+    input_meta: "${data.global_temperatures}"
+    output_meta: "${fact.global_temperatures}"
+  human_capital_index:
+    input_meta: "${data.human_capital_index}"
+    country_meta: "${dimension.country}"
+    output_meta: "${fact.human_capital_index}"
+  immigration:
+    input_meta: "${staging.immigration}"
+    country_meta: "${dimension.country}"
+    output_meta: "${fact.immigration}"
+  immigration_mapping:
+    input_meta: "${data.immigration}"
+    mapping_config_path: "${commons.scripts_path}/immigration_data_map.yaml"
+    output_meta: "${staging.immigration}"
+  press_freedom_index:
+    input_meta: "${data.press_freedom_index}"
+    country_meta: "${dimension.country}"
+    output_meta: "${fact.press_freedom_index}"
+  temperatures_by_country:
+    input_meta: "${data.temperatures_by_country}"
+    country_meta: "${dimension.country}"
+    output_meta: "${fact.temperatures_by_country}"
+  us_cities_demographics:
+    input_meta: "${data.us_cities_demographics}"
+    output_meta: "${fact.us_cities_demographics}"
