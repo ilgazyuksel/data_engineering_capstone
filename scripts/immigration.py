@@ -9,7 +9,7 @@ from pyspark.sql import functions as F
 from pyspark.sql.functions import udf
 from pyspark.sql.types import DateType
 
-from utils.helper import get_country_id, uppercase_columns
+from utils.helper import correct_country_names, get_country_id, uppercase_columns
 from utils.io import (
     create_spark_session,
     get_config_path_from_cli,
@@ -91,6 +91,7 @@ def main():
     - Convert dates from sas format to datetime
     - Uppercase columns
     - Rename dataframe
+    - Correct country names
     - Get origin country id
     - Control input
     - Write with meta
@@ -100,11 +101,14 @@ def main():
 
     config_path = get_config_path_from_cli()
     config = provide_config(config_path).get('scripts').get('immigration')
+    country_mapping_path = config.get('country_mapping_path')
 
     df = read_with_meta(spark, df_meta=config['input_meta'])
     df = convert_sas_to_date(df=df)
     df = uppercase_columns(df=df, col_list=['i94port', 'i94addr', 'occup', 'gender'])
     df = rename(df=df)
+    df = correct_country_names(df=df, country_col='country_name',
+                               country_mapping_path=country_mapping_path)
     df = get_country_id(spark, df=df, config=config)
     df = control_input(df=df)
     df = df.withColumnRenamed('country_id', 'origin_country_id')

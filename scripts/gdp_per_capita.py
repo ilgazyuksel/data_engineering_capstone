@@ -1,7 +1,13 @@
 """
 Gdp per capita etl script.
 """
-from utils.helper import add_rank_column, get_country_id, uppercase_columns, melt
+from utils.helper import (
+    add_rank_column,
+    correct_country_names,
+    get_country_id,
+    melt,
+    uppercase_columns
+)
 from utils.io import (
     create_spark_session,
     get_config_path_from_cli,
@@ -19,6 +25,7 @@ def main():
     - Read with meta
     - Uppercase columns
     - Rename dataframe
+    - Correct country names
     - Get country id
     - Convert wide dataframe to long
     - Add rank column
@@ -29,10 +36,13 @@ def main():
 
     config_path = get_config_path_from_cli()
     config = provide_config(config_path).get('scripts').get('gdp_per_capita')
+    country_mapping_path = config.get('country_mapping_path')
 
     df = read_with_meta(spark, df_meta=config['input_meta'], header=True)
     df = uppercase_columns(df=df, col_list=['Country Name'])
     df = df.withColumnRenamed("Country Name", "country_name")
+    df = correct_country_names(df=df, country_col='country_name',
+                               country_mapping_path=country_mapping_path)
     df = get_country_id(spark, df=df, config=config)
 
     df_long = melt(

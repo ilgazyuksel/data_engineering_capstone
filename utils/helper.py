@@ -6,8 +6,9 @@ from itertools import chain
 from typing import Dict, Iterable, List
 
 from pyspark.sql import DataFrame, Window, functions as F
+from pyspark.sql.functions import create_map, lit
 
-from utils.io import read_with_meta
+from utils.io import provide_config, read_with_meta
 
 
 def uppercase_columns(df: DataFrame, col_list: List) -> DataFrame:
@@ -102,4 +103,27 @@ def add_rank_column(df: DataFrame, partition_col: str, order_by_col: str, rank_c
         w = Window.partitionBy(partition_col).orderBy(order_by_col)
     df = df.withColumn(rank_col, F.row_number().over(w))
     logging.info(f"{rank_col} calculated by {partition_col}")
+    return df
+
+
+def correct_country_names(df: DataFrame, country_col: str, country_mapping_path: str,
+                                ) -> DataFrame:
+    """
+    Replace corrupted country values with true ones.
+
+    :param df: dataframe including country_name column
+    :param country_col: Column name of country
+    :param country_mapping_path: Path of mapping config
+    :return: dataframe including country_name columns
+    """
+    column = country_col
+    replace_dict = provide_config(country_mapping_path)
+    corrupted_values = list(replace_dict.keys())
+    map_col = create_map([lit(x) for x in chain(*replace_dict.items())])
+    df = df.withColumn(column, F.regexp_replace(column, '"', ''))
+    df = df.withColumn(column, F.when(F.col(column).isin(corrupted_values), map_col[df[column]]
+                                      ).otherwise(F.col(column)))
+    df = df.filter(F.col(column).isNotNull())
+    df = df.drop_duplicates()
+    logging.info("Corrupted country columns are replaced with true values")
     return df

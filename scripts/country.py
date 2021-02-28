@@ -1,14 +1,11 @@
 """
 Country etl script.
 """
-import logging
-from itertools import chain
 
 from pyspark.sql import DataFrame, Window
 from pyspark.sql import functions as F
-from pyspark.sql.functions import create_map, lit
 
-from utils.helper import uppercase_columns
+from utils.helper import correct_country_names, uppercase_columns
 from utils.io import (
     create_spark_session,
     get_config_path_from_cli,
@@ -16,27 +13,6 @@ from utils.io import (
     read_with_meta,
     write_with_meta
 )
-
-
-def fix_corrupted_country_names(df: DataFrame, mapping_config_path: str) -> DataFrame:
-    """
-    Replace corrupted country values with true ones.
-
-    :param df: dataframe including country_name column
-    :param mapping_config_path: Path of mapping config
-    :return: dataframe including country_name columns
-    """
-    column = "country_name"
-    replace_dict = provide_config(mapping_config_path)
-    corrupted_values = list(replace_dict.keys())
-    map_col = create_map([lit(x) for x in chain(*replace_dict.items())])
-    df = df.withColumn(column, F.regexp_replace(column, '"', ''))
-    df = df.withColumn(column, F.when(F.col(column).isin(corrupted_values), map_col[df[column]]
-                                      ).otherwise(F.col(column)))
-    df = df.filter(F.col(column).isNotNull())
-    df = df.drop_duplicates()
-    logging.info("Corrupted country columns are replaced with true values")
-    return df
 
 
 def read_data(spark, config: dict) -> tuple:
@@ -129,7 +105,7 @@ def main():
     - Get config
     - Read all dataframes with meta
     - Merge country names
-    - Fix corrupted values
+    - Correct country names
     - Generate an id column
     - Write with meta
     :return: None
@@ -138,7 +114,7 @@ def main():
 
     config_path = get_config_path_from_cli()
     config = provide_config(config_path).get('scripts').get('country')
-    mapping_config_path = config.get('mapping_config_path')
+    country_mapping_path = config.get('country_mapping_path')
 
     (
         gdp_per_capita, human_capital_index, press_freedom_index, temperatures_by_country,
@@ -149,7 +125,8 @@ def main():
         immigration
     )
 
-    df = fix_corrupted_country_names(df=df, mapping_config_path=mapping_config_path)
+    df = correct_country_names(df=df, country_col='country_name',
+                               country_mapping_path=country_mapping_path)
     df = df.withColumn('country_id', F.row_number().over(Window.orderBy('country_name')))
 
     write_with_meta(df=df, df_meta=config['output_meta'])

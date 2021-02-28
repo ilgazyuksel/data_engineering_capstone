@@ -269,11 +269,12 @@ scripts:
     press_freedom_index_meta: "${scripts.press_freedom_index.input_meta}"
     temperatures_by_country_meta: "${scripts.temperatures_by_country.input_meta}"
     immigration_meta: "${scripts.immigration.input_meta}"
-    mapping_config_path: "${commons.scripts_path}/country_correction.yaml"
+    country_mapping_path: "${commons.scripts_path}/country_correction.yaml"
     output_meta: "${dimension.country}"
   gdp_per_capita:
     input_meta: "${data.gdp_per_capita}"
     country_meta: "${dimension.country}"
+    country_mapping_path: "${commons.scripts_path}/country_correction.yaml"
     output_meta: "${fact.gdp_per_capita}"
   global_temperatures:
     input_meta: "${data.global_temperatures}"
@@ -281,10 +282,12 @@ scripts:
   human_capital_index:
     input_meta: "${data.human_capital_index}"
     country_meta: "${dimension.country}"
+    country_mapping_path: "${commons.scripts_path}/country_correction.yaml"
     output_meta: "${fact.human_capital_index}"
   immigration:
     input_meta: "${staging.immigration}"
     country_meta: "${dimension.country}"
+    country_mapping_path: "${commons.scripts_path}/country_correction.yaml"
     output_meta: "${fact.immigration}"
   immigration_mapping:
     input_meta: "${data.immigration}"
@@ -293,10 +296,12 @@ scripts:
   press_freedom_index:
     input_meta: "${data.press_freedom_index}"
     country_meta: "${dimension.country}"
+    country_mapping_path: "${commons.scripts_path}/country_correction.yaml"
     output_meta: "${fact.press_freedom_index}"
   temperatures_by_country:
     input_meta: "${data.temperatures_by_country}"
     country_meta: "${dimension.country}"
+    country_mapping_path: "${commons.scripts_path}/country_correction.yaml"
     output_meta: "${fact.temperatures_by_country}"
   us_cities_demographics:
     input_meta: "${data.us_cities_demographics}"
