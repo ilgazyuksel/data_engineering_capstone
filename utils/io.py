@@ -20,8 +20,7 @@ def create_spark_session() -> SparkSession:
 
 
 def read_s3_file(file_path):
-    """
-    """
+    """Read file from aws S3"""
     path_comps = urllib.parse.urlparse(file_path)
     bucket = path_comps.netloc
     key = path_comps.path[1:]
@@ -32,9 +31,8 @@ def read_s3_file(file_path):
     return res
 
 
-def read_file(file_path, **kwargs):
-    """
-    """
+def read_file(file_path):
+    """Read file according to its file schema"""
     s3_schema = 's3'
     path_comps = urllib.parse.urlparse(file_path)
     scheme = path_comps.scheme
@@ -49,7 +47,7 @@ def read_file(file_path, **kwargs):
     return return_result
 
 
-def get_config_path_from_cli():
+def get_config_path_from_cli() -> str:
     """Read command line arguments"""
     parser = argparse.ArgumentParser()
     parser.add_argument("--config-path", required=True)
@@ -59,9 +57,8 @@ def get_config_path_from_cli():
     return args.config_path
 
 
-def provide_config() -> Dict:
+def provide_config(path) -> Dict:
     """Get config from path with OmegaConf resolver"""
-    path = get_config_path_from_cli()
     conf = read_file(path)
     if isinstance(conf, bytes):
         conf = conf.decode('utf-8')
