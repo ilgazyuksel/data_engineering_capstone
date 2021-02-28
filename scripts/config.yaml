@@ -246,6 +246,7 @@ scripts:
   immigration:
     input_meta: "${data.immigration}"
     country_meta: "${dimension.country}"
+    mapping_config_path: "${commons.scripts_path}/immigration_data_map.yaml"
     output_meta: "${fact.immigration}"
   gdp_per_capita:
     input_meta: "${data.gdp_per_capita}"
