@@ -5,15 +5,14 @@ import datetime
 import os
 
 from airflow import DAG
-from airflow.providers.amazon.aws.operators.emr_add_steps import EmrAddStepsOperator
 from airflow.providers.amazon.aws.operators.emr_create_job_flow import EmrCreateJobFlowOperator
 from airflow.providers.amazon.aws.operators.emr_terminate_job_flow import (
     EmrTerminateJobFlowOperator
 )
 from airflow.providers.amazon.aws.sensors.emr_job_flow import EmrJobFlowSensor
-from airflow.providers.amazon.aws.sensors.emr_step import EmrStepSensor
 from airflow.utils.task_group import TaskGroup
 from omegaconf import OmegaConf
+
 from utils import emr_step_task_group
 
 airflow_dir_path = "dags"
@@ -67,6 +66,12 @@ with DAG(
         dag=dag
     )
 
+    with TaskGroup("run_immigration_mapping") as run_immigration_mapping:
+        add_step, wait_step = emr_step_task_group(
+            script_name='immigration_mapping', cluster_id=cluster_id, aws_conn_id=aws_conn_id,
+            dag=dag
+        )
+
     with TaskGroup("run_country") as run_country:
         add_step, wait_step = emr_step_task_group(
             script_name='country', cluster_id=cluster_id, aws_conn_id=aws_conn_id, dag=dag
@@ -114,10 +119,11 @@ with DAG(
 
     create_cluster >> wait_cluster_completion
 
-    wait_cluster_completion >> [
+    wait_cluster_completion >> run_immigration_mapping
+
+    run_immigration_mapping >> [
         run_country,
         run_global_temperatures,
-        run_immigration,
         run_us_cities_demographics
     ]
 
@@ -125,11 +131,11 @@ with DAG(
         run_gdp_per_capita,
         run_human_capital_index,
         run_press_freedom_index,
-        run_temperatures_by_country
+        run_temperatures_by_country,
+        run_immigration
     ] >> terminate_cluster
 
     [
         run_global_temperatures,
-        run_immigration,
         run_us_cities_demographics
     ] >> terminate_cluster
