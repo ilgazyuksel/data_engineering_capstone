@@ -1,8 +1,6 @@
 commons:
   file_schema: "s3://"
   bucket_name: "ilgazy-udacity/"
-  # file_schema: .
-  # bucket_name: /
   data_path: "${commons.file_schema}${commons.bucket_name}data"
   dimension_path: "${commons.file_schema}${commons.bucket_name}dimension"
   fact_path: "${commons.file_schema}${commons.bucket_name}fact"
@@ -176,20 +174,21 @@ staging:
       cicid: int
       i94yr: int
       i94mon: int
-      i94cit: int
-      i94res: int
+      i94cit: string
+      i94res: string
       i94port: string
       arrdate: int
       depdate: int
-      i94mode: int
+      i94mode: string
       i94addr: string
-      i94visa: int
+      i94visa: string
       occup: string
       biryear: int
       gender: string
 fact:
   gdp_per_capita:
     path: "${commons.fact_path}/gdp_per_capita"
+    data_format: "parquet"
     schema:
       country_id: int
       year: int
@@ -197,6 +196,7 @@ fact:
       gdp_per_capita_rank: int
   global_temperatures:
     path: "${commons.fact_path}/global_temperatures"
+    data_format: "parquet"
     partition_cols: [ "decade" ]
     schema:
       date: date
@@ -205,6 +205,7 @@ fact:
       land_avg_temperature: float
   human_capital_index:
     path: "${commons.fact_path}/human_capital_index"
+    data_format: "parquet"
     schema:
       country_id: int
       year: int
@@ -212,6 +213,7 @@ fact:
       human_capital_rank: int
   immigration:
     path: "${commons.fact_path}/immigration"
+    data_format: "parquet"
     schema:
       immigration_id: int
       birth_year: int
@@ -227,6 +229,7 @@ fact:
       departure_date: date
   press_freedom_index:
     path: "${commons.fact_path}/press_freedom_index"
+    data_format: "parquet"
     schema:
       country_id: int
       year: int
@@ -234,6 +237,7 @@ fact:
       press_freedom_rank: int
   temperatures_by_country:
     path: "${commons.fact_path}/temperatures_by_country"
+    data_format: "parquet"
     partition_cols: [ "decade" ]
     schema:
       date: date
@@ -243,6 +247,7 @@ fact:
       avg_temperature: float
   us_cities_demographics:
     path: "${commons.fact_path}/us_cities_demographics"
+    data_format: "parquet"
     schema:
       city: string
       state: string
