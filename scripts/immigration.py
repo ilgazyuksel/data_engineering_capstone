@@ -3,11 +3,10 @@ Immigration etl script.
 """
 import logging
 from datetime import datetime, timedelta
-from itertools import chain
 
 from pyspark.sql import DataFrame
 from pyspark.sql import functions as F
-from pyspark.sql.functions import create_map, lit, udf
+from pyspark.sql.functions import udf
 from pyspark.sql.types import DateType
 
 from utils.helper import get_country_id, uppercase_columns
@@ -18,23 +17,6 @@ from utils.io import (
     read_with_meta,
     write_with_meta
 )
-
-
-def replace_ids_with_values(df: DataFrame, mapping_config_path: str) -> DataFrame:
-    """
-    Replace ids with values in order to faster analytic processes.
-    :param df: immigration dataframe
-    :param mapping_config_path: Path of id-value mapping config
-    :return: immigration dataframe
-    """
-    mapping = provide_config(mapping_config_path)
-    for column in mapping.keys():
-        replace_dict = mapping.get(column)
-        map_col = create_map([lit(x) for x in chain(*replace_dict.items())])
-        df = df.withColumn(column, map_col[df[column]])
-        df = df.fillna('UNKNOWN', column)
-    logging.info("ID columns are replaced with values")
-    return df
 
 
 def rename(df: DataFrame) -> DataFrame:
@@ -107,7 +89,6 @@ def main():
     - Get config
     - Read with meta
     - Convert dates from sas format to datetime
-    - Replace ids with values
     - Uppercase columns
     - Rename dataframe
     - Get origin country id
@@ -119,11 +100,9 @@ def main():
 
     config_path = get_config_path_from_cli()
     config = provide_config(config_path).get('scripts').get('immigration')
-    mapping_config_path = config.get('mapping_config_path')
 
     df = read_with_meta(spark, df_meta=config['input_meta'])
     df = convert_sas_to_date(df=df)
-    df = replace_ids_with_values(df=df, mapping_config_path=mapping_config_path)
     df = uppercase_columns(df=df, col_list=['i94port', 'i94addr', 'occup', 'gender'])
     df = rename(df=df)
     df = get_country_id(spark, df=df, config=config)

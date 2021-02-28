@@ -1,11 +1,12 @@
 commons:
-  file_schema: "s3://"
-  bucket_name: "ilgazy-udacity/"
-  # file_schema: .
-  # bucket_name: /
+  # file_schema: "s3://"
+  # bucket_name: "ilgazy-udacity/"
+  file_schema: .
+  bucket_name: /
   fact_path: "${commons.file_schema}${commons.bucket_name}fact"
   dimension_path: "${commons.file_schema}${commons.bucket_name}dimension"
   data_path: "${commons.file_schema}${commons.bucket_name}data"
+  staging_path: "${commons.file_schema}${commons.bucket_name}staging"
   scripts_path: "${commons.file_schema}${commons.bucket_name}scripts"
 data:
   immigration:
@@ -167,6 +168,25 @@ data:
       "Country": string
       "AverageTemperature": float
       "AverageTemperatureUncertainty": float
+staging:
+  immigration:
+    path: "${commons.staging_path}/immigration"
+    data_format: "parquet"
+    schema:
+      cicid: int
+      i94yr: int
+      i94mon: int
+      i94cit: int
+      i94res: int
+      i94port: string
+      arrdate: int
+      depdate: int
+      i94mode: int
+      i94addr: string
+      i94visa: int
+      occup: string
+      biryear: int
+      gender: string
 fact:
   immigration:
     path: "${commons.fact_path}/immigration"
@@ -244,10 +264,13 @@ dimension:
       country_name: string
 scripts:
   immigration:
-    input_meta: "${data.immigration}"
+    input_meta: "${staging.immigration}"
     country_meta: "${dimension.country}"
-    mapping_config_path: "${commons.scripts_path}/immigration_data_map.yaml"
     output_meta: "${fact.immigration}"
+  immigration_mapping:
+    input_meta: "${data.immigration}"
+    mapping_config_path: "${commons.scripts_path}/immigration_data_map.yaml"
+    output_meta: "${staging.immigration}"
   gdp_per_capita:
     input_meta: "${data.gdp_per_capita}"
     country_meta: "${dimension.country}"
@@ -275,5 +298,6 @@ scripts:
     human_capital_index_meta: "${scripts.human_capital_index.input_meta}"
     press_freedom_index_meta: "${scripts.press_freedom_index.input_meta}"
     temperatures_by_country_meta: "${scripts.temperatures_by_country.input_meta}"
+    immigration_meta: "${scripts.immigration.input_meta}"
     mapping_config_path: "${commons.scripts_path}/country_correction.yaml"
     output_meta: "${dimension.country}"
