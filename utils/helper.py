@@ -7,7 +7,7 @@ from typing import Dict, Iterable, List
 
 from pyspark.sql import DataFrame, Window, functions as F
 
-from scripts.utils.io import read_with_meta
+from utils.io import read_with_meta
 
 
 def uppercase_columns(df: DataFrame, col_list: List) -> DataFrame:

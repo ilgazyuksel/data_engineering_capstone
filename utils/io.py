@@ -1,9 +1,12 @@
 """
 Input & output methods.
 """
+import argparse
 import logging
+import urllib.parse
 from typing import Dict
 
+import boto3
 from omegaconf import OmegaConf
 from pyspark.sql import DataFrame, SparkSession, functions as F
 
@@ -16,9 +19,54 @@ def create_spark_session() -> SparkSession:
     return spark
 
 
-def provide_config(path) -> Dict:
+def read_s3_file(file_path):
+    """
+    """
+    path_comps = urllib.parse.urlparse(file_path)
+    bucket = path_comps.netloc
+    key = path_comps.path[1:]
+    s3_resource = boto3.resource('s3')
+    obj = s3_resource.Object(bucket, key)  # pylint: disable=no-member
+    res = obj.get()['Body'].read()
+    obj.get()['Body'].close()
+    return res
+
+
+def read_file(file_path, **kwargs):
+    """
+    """
+    s3_schema = 's3'
+    path_comps = urllib.parse.urlparse(file_path)
+    scheme = path_comps.scheme
+    return_result = None
+
+    if not scheme or scheme != s3_schema:
+        file_stream = open(file_path)
+        return_result = file_stream.read()
+        file_stream.close()
+    elif scheme == s3_schema:
+        return_result = read_s3_file(file_path)
+    return return_result
+
+
+def get_config_path_from_cli():
+    """Read command line arguments"""
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--config-path", required=True)
+    args, unknown_args = parser.parse_known_args()
+    logging.info("Args: {}".format(args))
+    logging.info("Unknown args: {}".format(unknown_args))
+    return args.config_path
+
+
+def provide_config() -> Dict:
     """Get config from path with OmegaConf resolver"""
-    conf = OmegaConf.load(path)
+    path = get_config_path_from_cli()
+    conf = read_file(path)
+    if isinstance(conf, bytes):
+        conf = conf.decode('utf-8')
+    conf = OmegaConf.create(conf)
+    #    conf = OmegaConf.load(path)
     resolved = OmegaConf.to_container(conf, resolve=True)
     logging.info("Config provided")
     return resolved
