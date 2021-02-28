@@ -1,5 +1,15 @@
+import os
+
 from airflow.providers.amazon.aws.operators.emr_add_steps import EmrAddStepsOperator
 from airflow.providers.amazon.aws.sensors.emr_step import EmrStepSensor
+from omegaconf import OmegaConf
+
+airflow_dir_path = "dags"
+config = OmegaConf.load(os.path.join(airflow_dir_path, "config.yaml"))
+config = OmegaConf.to_container(config, resolve=True)
+
+file_schema = config.get('file_schema')
+bucket_name = config.get('bucket_name')
 
 
 def emr_step_task_group(script_name, cluster_id, aws_conn_id, dag):
@@ -12,9 +22,9 @@ def emr_step_task_group(script_name, cluster_id, aws_conn_id, dag):
                 'Args': [
                     'spark-submit',
                     '--deploy-mode', 'client',
-                    '--py-files', 's3://ilgazy-udacity/scripts/utils.zip',
-                    f's3://ilgazy-udacity/scripts/{script_name}.py',
-                    '--config-path', 's3://ilgazy-udacity/scripts/config.yaml'
+                    '--py-files', f'{file_schema}{bucket_name}scripts/utils.zip',
+                    f'{file_schema}{bucket_name}scripts/{script_name}.py',
+                    '--config-path', f'{file_schema}{bucket_name}scripts/config.yaml'
                 ]
             }
         }
