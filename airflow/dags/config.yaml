@@ -1,0 +1,44 @@
+aws_conn_id: 'aws'
+emr_conn_id: 'emr_default'
+mail_to: 'ilgazyuksel@gmail.com'
+job_flow_overrides:
+  Name: test_cluster
+  LogUri: s3://ilgazy-udacity/logs/emr/
+  ReleaseLabel: emr-5.32.0
+  Instances:
+    InstanceGroups:
+      - Name: Master Instance Group
+        Market: ON_DEMAND
+        InstanceRole: MASTER
+        InstanceType: m5.xlarge
+        InstanceCount: 1
+      - Name: Core Instance Group
+        Market: ON_DEMAND
+        InstanceRole: CORE
+        InstanceType: m5.xlarge
+        InstanceCount: 1
+    KeepJobFlowAliveWhenNoSteps: true
+    EmrManagedMasterSecurityGroup: sg-0000803db21d76f88
+    EmrManagedSlaveSecurityGroup: sg-066db3c07d764e983
+    Placement:
+      AvailabilityZone: us-west-2a
+  BootstrapActions:
+    - Name: copy config to local
+      ScriptBootstrapAction:
+        Path: s3://ilgazy-udacity/scripts/bootstrap/install_packages.sh
+  Applications:
+    - Name: hadoop
+    - Name: spark
+    - Name: hive
+    - Name: livy
+    - Name: jupyterhub
+    - Name: zeppelin
+    - Name: ganglia
+  VisibleToAllUsers: true
+  JobFlowRole: EMR_EC2_DefaultRole
+  ServiceRole: EMR_DefaultRole
+  Tags:
+    - Key: app
+      Value: analytics
+    - Key: environment
+      Value: development
