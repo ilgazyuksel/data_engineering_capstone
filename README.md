@@ -256,7 +256,8 @@ used `TaskGroup` to group `EmrAddStepsOperator` and `EmrStepSensor` as below.
 
 ## Analysis
 
-Queries below are analyzed in Notebook. You may see the notebook directly for mor detail.
+Queries below are analyzed in Notebook. You may see the [notebook](analysis.ipynb) directly for
+more detail.
 
 **Immigration summary**
 

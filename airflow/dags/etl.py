@@ -1,5 +1,15 @@
 """
-## Capstone ETL
+## Udacity Data Engineering Capstone Project ETL DAG
+
+DAG organizes the ETL steps of this project. It is not scheduled, once it's triggered, following
+codes will run.
+
+- Create cluster
+- Wait cluster to be ready
+- Run immigration mapping to get country names
+- Run country to generate county id dimension table
+- Run other scripts joining with country table
+- Terminate cluster
 """
 import datetime
 import os
