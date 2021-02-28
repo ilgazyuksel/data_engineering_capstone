@@ -4,7 +4,7 @@ aws_conn_id: 'aws'
 emr_conn_id: 'emr_default'
 mail_to: 'ilgazyuksel@gmail.com'
 job_flow_overrides:
-  Name: test_cluster
+  Name: udacity-cluster
   LogUri: "${file_schema}${bucket_name}logs/emr/"
   ReleaseLabel: emr-5.32.0
   Instances:
