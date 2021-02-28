@@ -8,9 +8,10 @@ from pyspark.sql import DataFrame, Window
 from pyspark.sql import functions as F
 from pyspark.sql.functions import create_map, lit
 
-from scripts.utils.helper import uppercase_columns
-from scripts.utils.io import (
+from utils.helper import uppercase_columns
+from utils.io import (
     create_spark_session,
+    get_config_path_from_cli,
     provide_config,
     read_with_meta,
     write_with_meta
@@ -125,8 +126,9 @@ def main():
     """
     spark = create_spark_session()
 
-    config_path = "scripts/config.yaml"
+    config_path = get_config_path_from_cli()
     config = provide_config(config_path).get('scripts').get('country')
+    mapping_config_path = config.get('mapping_config_path')
 
     (
         gdp_per_capita, human_capital_index, press_freedom_index, temperatures_by_country
@@ -135,7 +137,6 @@ def main():
         gdp_per_capita, human_capital_index, press_freedom_index, temperatures_by_country
     )
 
-    mapping_config_path = "scripts/country_correction.yaml"
     df = fix_corrupted_country_names(df=df, mapping_config_path=mapping_config_path)
     df = df.withColumn('country_id', F.row_number().over(Window.orderBy('country_name')))
 

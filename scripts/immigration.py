@@ -10,9 +10,10 @@ from pyspark.sql import functions as F
 from pyspark.sql.functions import create_map, lit, udf
 from pyspark.sql.types import DateType
 
-from scripts.utils.helper import get_country_id, uppercase_columns
-from scripts.utils.io import (
+from utils.helper import get_country_id, uppercase_columns
+from utils.io import (
     create_spark_session,
+    get_config_path_from_cli,
     provide_config,
     read_with_meta,
     write_with_meta
@@ -116,9 +117,9 @@ def main():
     """
     spark = create_spark_session()
 
-    config_path = "scripts/config.yaml"
-    mapping_config_path = "scripts/immigration_data_map.yaml"
+    config_path = get_config_path_from_cli()
     config = provide_config(config_path).get('scripts').get('immigration')
+    mapping_config_path = config.get('mapping_config_path')
 
     df = read_with_meta(spark, df_meta=config['input_meta'])
     df = convert_sas_to_date(df=df)

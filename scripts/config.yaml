@@ -1,11 +1,12 @@
 commons:
-#  file_schema: "s3://"
-  file_schema: .
-#  bucket_name: "ilgaz-udacity/"
-  bucket_name: /
+  file_schema: "s3://"
+  bucket_name: "ilgazy-udacity/"
+  # file_schema: .
+  # bucket_name: /
   fact_path: "${commons.file_schema}${commons.bucket_name}fact"
   dimension_path: "${commons.file_schema}${commons.bucket_name}dimension"
   data_path: "${commons.file_schema}${commons.bucket_name}data"
+  scripts_path: "${commons.file_schema}${commons.bucket_name}scripts"
 data:
   immigration:
     path: "${commons.data_path}/immigration"
@@ -219,7 +220,7 @@ fact:
       count: int
   global_temperatures:
     path: "${commons.fact_path}/global_temperatures"
-    partition_cols: ["decade"]
+    partition_cols: [ "decade" ]
     schema:
       date: date
       year: int
@@ -227,7 +228,7 @@ fact:
       land_avg_temperature: float
   temperatures_by_country:
     path: "${commons.fact_path}/temperatures_by_country"
-    partition_cols: ["decade"]
+    partition_cols: [ "decade" ]
     schema:
       date: date
       year: int
@@ -273,4 +274,5 @@ scripts:
     human_capital_index_meta: "${scripts.human_capital_index.input_meta}"
     press_freedom_index_meta: "${scripts.press_freedom_index.input_meta}"
     temperatures_by_country_meta: "${scripts.temperatures_by_country.input_meta}"
+    mapping_config_path: "${commons.scripts_path}/country_correction.yaml"
     output_meta: "${dimension.country}"

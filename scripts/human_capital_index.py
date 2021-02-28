@@ -1,9 +1,10 @@
 """
 Human capital index etl script.
 """
-from scripts.utils.helper import add_rank_column, get_country_id, uppercase_columns, melt
-from scripts.utils.io import (
+from utils.helper import add_rank_column, get_country_id, uppercase_columns, melt
+from utils.io import (
     create_spark_session,
+    get_config_path_from_cli,
     provide_config,
     read_with_meta,
     write_with_meta
@@ -26,7 +27,7 @@ def main():
     """
     spark = create_spark_session()
 
-    config_path = "scripts/config.yaml"
+    config_path = get_config_path_from_cli()
     config = provide_config(config_path).get('scripts').get('human_capital_index')
 
     df = read_with_meta(spark, df_meta=config['input_meta'], header=True)

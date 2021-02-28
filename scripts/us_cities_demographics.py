@@ -3,9 +3,10 @@ US cities demographics etl script.
 """
 from pyspark.sql import DataFrame
 
-from scripts.utils.helper import uppercase_columns
-from scripts.utils.io import (
+from utils.helper import uppercase_columns
+from utils.io import (
     create_spark_session,
+    get_config_path_from_cli,
     provide_config,
     read_with_meta,
     write_with_meta
@@ -48,7 +49,7 @@ def main():
     """
     spark = create_spark_session()
 
-    config_path = "scripts/config.yaml"
+    config_path = get_config_path_from_cli()
     config = provide_config(config_path).get('scripts').get('us_cities_demographics')
 
     df = read_with_meta(spark, df_meta=config['input_meta'], header=True, sep=';')
